@@ -27,7 +27,7 @@ For those wanting to try it out, this is what you need:
 
 ---
 
-3) Download the patient data analyzed from the Pooled Resource Open-Access ALS Clinical Trials (PRO-ACT) website (https://ncri1.partners.org/ProACT)
+3) Download the patient data analyzed from the Pooled Resource Open-Access ALS Clinical Trials (PRO-ACT) website ([https://ncri1.partners.org/ProACT](https://ncri1.partners.org/ProACT))
     - Register and log in to the website
     - Access the `Data` menu and download the `ALL FORMS` dataset
     - Extract the zipped data file into the `01_raw_data` folder
