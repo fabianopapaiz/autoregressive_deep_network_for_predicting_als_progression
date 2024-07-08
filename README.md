@@ -1,13 +1,13 @@
-# Ensemble-Imbalance-based classification for amyotrophic lateral sclerosis prognostic prediction: identifying short-survival patients at diagnosis
+# Autoregressive Multi-Step Multi-Output Deep Neural Network for Predicting Amyotrophic Lateral Sclerosis Progression
 
 
-This code uses ensemble and imbalance learning approaches to improve identifying short-survival amyotrophic lateral sclerosis patients at diagnosis time. Furthermore, we utilized the SHAP framework to explain how the best model performed the patient classifications.  
-The results of this work have been published in the research article "Ensemble-Imbalance-based classification for amyotrophic lateral sclerosis prognostic prediction: identifying short-survival patients at diagnosis" (Papaiz et al., 2023).
+This study is the first to employ this approach to ALS prognosis to predict the functional decline over time. We extracted static and temporal features from the Pooled Resource Open-Access ALS Clinical Trials (PRO-ACT) database. We developed and evaluated deep learning models using the Gated Recurrent Unit and Long Short-Term Memory algorithms. Our approach outperformed previous works with a significantly smaller set of input features, thus demonstrating greater effectiveness. With the promising results obtained, our approach could aid physicians in devising personalized treatment and resource planning or serve as an inclusion/exclusion criterion in clinical trials.  
+The results of this work have been published in the research article "Autoregressive Multi-Step Multi-Output Deep Neural Network for Predicting Amyotrophic Lateral Sclerosis Progression" (Papaiz et al., 2024).
 
 
 **If you use this code for your research please cite this paper:**
 
-> Papaiz F, Dourado MET, Valentim RAdM, Pinto R, de Morais AHF, Arrais JP. Ensemble-Imbalance-based classification for amyotrophic lateral sclerosis prognostic prediction: identifying short-survival patients at diagnosis. 2023.
+> Papaiz F, Dourado MET, Valentim RAdM, dos Santos JPQ, Fernandes FRdS, de Morais AHF, Correia FB, Arrais JP. Autoregressive Multi-Step Multi-Output Deep Neural Network for Predicting Amyotrophic Lateral Sclerosis Progression. 2024.
    
 [LICENSE](LICENSE)
 
