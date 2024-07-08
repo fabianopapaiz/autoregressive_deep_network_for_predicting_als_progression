@@ -56,38 +56,26 @@ For those wanting to try it out, this is what you need:
         - Save the performance results into CSV files in the `05_Train_Validate_Models/exec_results` folder
              
     - Pipeline Overview:
-      
-      ![ml_pipeline](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/assets/16102250/2509f990-79ed-4009-8409-d037c5dbd46d)
 
+      ![overall](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/10559c84-9b84-460d-91ca-132dab0124d4)
 
 
 
     - Validation performance obtained by each scenario and algorithm:
-      
-      ![performances_both_scenarios_barplot](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/assets/16102250/fc10a69f-e7f5-4a96-a0dd-f88e9d852059)
+  
+      ![best_performance_by_model_ALSFRS_Total](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/b15c9e02-633b-4d65-ad73-c15555f3bf95)
 
 
+    - Best deep model architecture:
 
----
+      ![rnn](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/87baaf73-c88e-4d04-bf23-5ab4ec8c4e7d)
 
- 
-6) Execute the SHAP explanations over the model that reached the best performance for the _Ensemble-Imbalance_ scenario(i.e., _BalancedBagging_ model using _Neural Networks_ as a base estimator)
-    - Create a SHAP Kernel Explainer instance using the best model and the Validation set:
-        - ```explainer = shap.KernelExplainer(<<BEST_MODEL>>.predict, X_valid) ```
-    - Generate the SHAP values: (Note: It can take many hours)
-        - ```shap_values = explainer.shap_values(X_valid)```
-    - Analyze the SHAP results by plotting SHAP graphs. See the examples below:
-        - Decision plot:
           
-          ![patient_B_decision_plot](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/assets/16102250/764dc32a-d273-4c1c-aa1a-ed73ba4994ed)
+    - Individualized predictions:
 
-        
-        - Summary plot: (Bar and Dotted plots)
-          
-          ![SHAP_0_Feature_Importance_and_Beeswarm](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/assets/16102250/f10efead-d5e8-4455-b1ac-0527e51b2456)
+      ![patient_example_2](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/c7c180ef-d15e-4bd2-a983-287b80206060)
 
 
----
 
 7) Grid-Search hyperparameters used for each algorithm.
 
