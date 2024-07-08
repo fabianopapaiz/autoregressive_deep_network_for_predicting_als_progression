@@ -19,12 +19,11 @@ For those wanting to try it out, this is what you need:
 
 2) Install the following Python packages:
     - numpy (1.23.5)
-    - pandas (1.5.3)
-    - matplotlib (3.7.0)
-    - seaborn (0.12.2)
-    - scikit-learn (1.2.1)
-    - imbalanced-learn (0.10.1)
-    - shap (0.41.0) 
+    - pandas (2.1.1)
+    - matplotlib (3.8.0)
+    - seaborn (0.13)
+    - scikit-learn (1.3.2)
+    - TensorFlow (2.14)
 
 ---
 
