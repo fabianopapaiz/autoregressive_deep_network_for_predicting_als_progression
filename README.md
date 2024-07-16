@@ -13,7 +13,8 @@ The results of this work have been published in the research article "Autoregres
 
 ---
 For those wanting to try it out, this is what you need:
-1) #### A working version of Python (version 3.9+) and jupyter-notebook.
+1) #### Programming language:
+     - Python (version 3.9+)
 
 ---
 
@@ -65,7 +66,7 @@ For those wanting to try it out, this is what you need:
 
 ---
 
-6) #### Perform the Machine Learning (ML) pipeline:
+6) #### Perform the Machine Learning pipeline:
    
     6.1) Split the dataset into _Training_ (80%) and _Validation_ (20%) subsets
    
