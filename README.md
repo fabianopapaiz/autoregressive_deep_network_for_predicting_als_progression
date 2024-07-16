@@ -83,13 +83,13 @@ For those wanting to try it out, this is what you need:
       ![Screenshot 2024-07-16 08:55:50](https://github.com/user-attachments/assets/5e31ef36-dc45-4cf3-a620-cf9274a1c938)
 
 
-    6.5) Evaluate the models using 3-month data to predict the next 12 months. The metrics utilized were RMSE and R^2.
+    6.5) Evaluate the models using 3-month data to predict the next 12 months, comparing the predicted and actual values. The metrics utilized were **RMSE** and **R<sup>2</sup>**.
 
       ![Screenshot 2024-07-16 08:57:12](https://github.com/user-attachments/assets/99964a29-165e-4f36-b351-4bc9c7ac599d)
 
 
 
-    - Pipeline Overview:
+    6.6)- Pipeline Overview:
 
       ![overall](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/10559c84-9b84-460d-91ca-132dab0124d4)
 
