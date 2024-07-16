@@ -56,12 +56,21 @@ For those wanting to try it out, this is what you need:
 
     - Features analyzed:
 
-  
+        ![Screenshot 2024-07-16 08:33:39](https://github.com/user-attachments/assets/d7a55da2-7394-450e-b87c-a58da4e3961e)
+
       
 
 ---
 
 6) Perform the Machine Learning (ML) pipeline:
+    - Create the code to define the matrices **_X_**'s (1) comprising information about the variation of all features over time for each patient
+
+        ![Screenshot 2024-07-16 08:40:15](https://github.com/user-attachments/assets/64c9174d-9f74-490f-ba62-a287bde8d864)
+
+
+       - where _f_ = 1, 2, ..., 22 (features) and _t_ = 0, 1, ..., 15 (time steps)
+
+   
     - Execute the python program ```exec_grid_search_both_scenarios.py``` in the `05_Train_Validate_Models` folder
     - This program will:
         - Split the dataset into _Training_ and _Validation_ subsets 
@@ -91,7 +100,7 @@ For those wanting to try it out, this is what you need:
 
 
 
-7) Grid-Search hyperparameters used for each algorithm.
+8) Grid-Search hyperparameters used for each algorithm.
 
 ![grid-search-params](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/assets/16102250/8ed50d34-ff82-43c7-8364-b51d9ffbff8b)
 
