@@ -48,8 +48,20 @@ For those wanting to try it out, this is what you need:
 
 
 ---
+      
+5) The file `data_as_time_series_15m_data_Only_ALSFRS.csv` contains all the temporal data analyzed in this study. It contains the patient data for all features (`n=22`) and all time steps (from `0` up to `15`)
 
-5) Perform the Machine Learning (ML) pipeline:
+    ![Screenshot 2024-07-16 08:29:14](https://github.com/user-attachments/assets/34d5c880-b2d5-4f1a-97b8-5f9b65c8102c)
+
+
+    - Features analyzed:
+
+  
+      
+
+---
+
+6) Perform the Machine Learning (ML) pipeline:
     - Execute the python program ```exec_grid_search_both_scenarios.py``` in the `05_Train_Validate_Models` folder
     - This program will:
         - Split the dataset into _Training_ and _Validation_ subsets 
