@@ -33,17 +33,19 @@ For those wanting to try it out, this is what you need:
     - Access the `Data` menu and download the `ALL FORMS` dataset
     - Extract the zipped data file into the `01_raw_data` folder
     - The `01_raw_data` folder will contain the following CSV files
-      
-      ![raw_data_folder](https://github.com/fabianopapaiz/als_prognosis_using_ensemble_imbalance/assets/16102250/dc9c533d-8152-44f0-b0f4-5b9112f34e04)
 
+     ![Screenshot 2024-07-16 08:20:20](https://github.com/user-attachments/assets/ac9848ad-7f55-4dff-bd93-7b1defbf5a81)
+
+      
 ---
       
 4) Perform the Extract-Load-Transform (ETL) step:    
     - Start the `jupyter-notebook` environment 
     - Open and execute all code of the `02.01 - Preprocess raw data.ipynb` file, which is inside the `02_ETL` folder
-    - After execution, the preprocessed data will be saved in the `03_preprocessed_data` and `04_data_to_analyze` folders
+    - After execution, the preprocessed data will be saved in the `03_preprocessed_data`, `04_data_to_analyze`, and `05_data_as_time_series` folders
 
-    ![preprocessed data](https://github.com/fabianopapaiz/als_prognosis_using_ensemble_imbalance/assets/16102250/b86b4ecd-1f3d-44b4-aa54-ceb1b8860f3f)
+    ![Screenshot 2024-07-16 08:24:33](https://github.com/user-attachments/assets/e1e9534c-a41f-4e8a-ab51-5e82ba480611)
+
 
 ---
 
