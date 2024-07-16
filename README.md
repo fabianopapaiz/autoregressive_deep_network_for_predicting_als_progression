@@ -67,7 +67,10 @@ For those wanting to try it out, this is what you need:
 ---
 
 6) #### Perform the Machine Learning pipeline:
-   
+
+      ![Screenshot 2024-07-16 10:14:36](https://github.com/user-attachments/assets/3eaeae7b-eeb0-4132-bcc9-3535fa31f389)
+
+
     6.1) Open the temporal data file `data_as_time_series_15m_data_Only_ALSFRS.csv`
 
     6.2) Split the dataset into _Training_ (80%) and _Validation_ (20%) subsets
@@ -95,10 +98,6 @@ For those wanting to try it out, this is what you need:
 
 
 
-
-    6.7)- **Pipeline Overview:**
-
-      ![Screenshot 2024-07-16 10:14:36](https://github.com/user-attachments/assets/3eaeae7b-eeb0-4132-bcc9-3535fa31f389)
 
 
 ---
