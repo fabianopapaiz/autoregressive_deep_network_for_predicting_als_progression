@@ -120,6 +120,14 @@ For those wanting to try it out, this is what you need:
 
 10) Grid-Search hyperparameters used for each algorithm.
 
+   - Drop-out rates: 10%, 20%, 30%, 35%, 40%, 45%, and 50%
+   
+   - Regularizers:
+      - Types: LASSO, Ridge, and ElasticNet
+      - Values: 0.1, 0.01, 0.001
+    
+   - Initial learning rate: 10<sup>-7</sup>
+
    - RNN architectures: unidirectional and bidirectional
      
    - Number of neurons and hidden layers:
@@ -142,30 +150,22 @@ For those wanting to try it out, this is what you need:
        - [2048, 2048]       
        - [2048, 2048, 2048]       
 
-   - Drop-out rates: 10%, 20%, 30%, 35%, 40%, 45%, and 50%
+
+
+---
+
+11) Best deep learning model's hyperparameters (GRU):
+
+   - Drop-out rates: 35%
    
-   - Regularizers:
-      - Types: LASSO, Ridge, and ElasticNet
-      - Values: 0.1, 0.01, 0.001
+   - Regularizers: Ridge = 0.001
     
-   - Initial learning rate: 10<sup>-7</sup>
-
-
-
----
-
-11) Best models' hyperparameters
-
-![best-model-params](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/assets/16102250/2d00db54-ddd3-4001-9193-15fa1ac12ca5)
+   - RNN architectures: bidirectional
+     
+   - Number of neurons and hidden layers: [1024, 1024]
 
 ---
 
-12) Additional Information:
-
-   [Exploratory Data Analysis](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/files/12899208/additional_info.pdf)
-
-
----
 Finally, please let us know if you have any comments or suggestions, or if you have questions about the code or the procedure (correspondence e-mail: `fabianopapaiz at gmail dot com`). 
 
 
