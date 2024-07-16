@@ -13,11 +13,12 @@ The results of this work have been published in the research article "Autoregres
 
 ---
 For those wanting to try it out, this is what you need:
-1) A working version of Python (version 3.9+) and jupyter-notebook.
+1) #### A working version of Python (version 3.9+) and jupyter-notebook.
 
 ---
 
-2) Install the following Python packages:
+2) #### Install the following Python packages: </h3>
+
     - numpy (1.23.5)
     - pandas (2.1.1)
     - matplotlib (3.8.0)
@@ -28,7 +29,8 @@ For those wanting to try it out, this is what you need:
 
 ---
 
-3) Download the patient data analyzed from the Pooled Resource Open-Access ALS Clinical Trials (PRO-ACT) website ([https://ncri1.partners.org/ProACT](https://ncri1.partners.org/ProACT))
+3) #### Download the patient data analyzed from the Pooled Resource Open-Access ALS Clinical Trials (PRO-ACT) website ([https://ncri1.partners.org/ProACT](https://ncri1.partners.org/ProACT))
+   
     - Register and log in to the website
     - Access the `Data` menu and download the `ALL FORMS` dataset
     - Extract the zipped data file into the `01_raw_data` folder
@@ -39,7 +41,7 @@ For those wanting to try it out, this is what you need:
       
 ---
       
-4) Perform the Extract-Load-Transform (ETL) step:    
+4) #### Perform the Extract-Load-Transform (ETL) step:    
     - Start the `jupyter-notebook` environment 
     - Open and execute all code of the `02.01 - Preprocess raw data.ipynb` file, which is inside the `02_ETL` folder
     - After execution, the preprocessed data will be saved in the `03_preprocessed_data`, `04_data_to_analyze`, and `05_data_as_time_series` folders
@@ -49,7 +51,8 @@ For those wanting to try it out, this is what you need:
 
 ---
       
-5) The file `data_as_time_series_15m_data_Only_ALSFRS.csv` contains all the temporal data analyzed in this study. It contains the patient data for all features (`n=22`) and all time steps (from `0` up to `15`)
+5) #### Temporal data file
+    - The file `data_as_time_series_15m_data_Only_ALSFRS.csv` contains all the temporal data analyzed in this study. It contains the patient data for all features (`n=22`) and all time steps (from `0` up to `15`)
 
     ![Screenshot 2024-07-16 08:29:14](https://github.com/user-attachments/assets/34d5c880-b2d5-4f1a-97b8-5f9b65c8102c)
 
@@ -62,7 +65,7 @@ For those wanting to try it out, this is what you need:
 
 ---
 
-6) Perform the Machine Learning (ML) pipeline:
+6) #### Perform the Machine Learning (ML) pipeline:
    
     6.1) Split the dataset into _Training_ (80%) and _Validation_ (20%) subsets
    
@@ -97,28 +100,21 @@ For those wanting to try it out, this is what you need:
 
 ---
 
-7) Best validation performance obtained by each algorithm (GRU and LSTM):
+7) #### Best validation performance obtained by each algorithm (GRU and LSTM):
   
       ![best_performance_by_model_ALSFRS_Total](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/b15c9e02-633b-4d65-ad73-c15555f3bf95)
 
 
 ---
 
-8) Best deep learning model architecture (GRU):
+8) #### Best deep learning model architecture (GRU):
 
       ![rnn](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/87baaf73-c88e-4d04-bf23-5ab4ec8c4e7d)
 
           
 ---
 
-9) Individualized predictions using a patient from the _Testing_ subset:
-
-      ![patient_example_2](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/c7c180ef-d15e-4bd2-a983-287b80206060)
-
-
----
-
-10) Grid-Search hyperparameters used for each algorithm.
+9) #### Grid-Search hyperparameters used for each algorithm.
 
    - Drop-out rates: 10%, 20%, 30%, 35%, 40%, 45%, and 50%
    
@@ -154,18 +150,26 @@ For those wanting to try it out, this is what you need:
 
 ---
 
-11) Best deep learning model's hyperparameters (GRU):
+10) #### Best deep learning model's hyperparameters (GRU):
 
-   - Drop-out rates: 35%
+   - Drop-out rate: 35%
    
-   - Regularizers: Ridge = 0.001
+   - Regularizer: Ridge = 0.001
     
-   - RNN architectures: bidirectional
+   - RNN architecture: bidirectional
      
    - Number of neurons and hidden layers: [1024, 1024]
 
+
 ---
 
-Finally, please let us know if you have any comments or suggestions, or if you have questions about the code or the procedure (correspondence e-mail: `fabianopapaiz at gmail dot com`). 
+11) #### Individualized predictions using a patient from the _Testing_ subset:
+
+      ![patient_example_2](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/c7c180ef-d15e-4bd2-a983-287b80206060)
+
+
+---
+
+### Finally, please let us know if you have any comments or suggestions, or if you have questions about the code or the procedure (correspondence e-mail: `fabianopapaiz at gmail dot com`).
 
 
