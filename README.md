@@ -63,20 +63,20 @@ For those wanting to try it out, this is what you need:
 ---
 
 6) Perform the Machine Learning (ML) pipeline:
-    - Create the code to define the matrices **_X_**'s (1) comprising information about the variation of all features over time for each patient
+   
+    6.1) Split the dataset into _Training_ (80%) and _Validation_ (20%) subsets
+   
+    6.2) Utilize the _Training_ subset to create the matrices **_X_**'s (1) comprising information about the variation of all features over time for each patient, where _f_ = 1, 2, ..., 22 (features) and _t_ = 0, 1, ..., 15 (time steps)
 
-        ![Screenshot 2024-07-16 08:40:15](https://github.com/user-attachments/assets/64c9174d-9f74-490f-ba62-a287bde8d864)
-
-
-       - where _f_ = 1, 2, ..., 22 (features) and _t_ = 0, 1, ..., 15 (time steps)
+      ![Screenshot 2024-07-16 08:40:15](https://github.com/user-attachments/assets/a7d5f6f5-4428-4f7d-ac64-0b9507d80473)
 
    
-    - Execute the python program ```exec_grid_search_both_scenarios.py``` in the `05_Train_Validate_Models` folder
-    - This program will:
-        - Split the dataset into _Training_ and _Validation_ subsets 
-        - Train and validate the ML models for both scenarios (_Single-Model_ and _Ensemble-Imbalance_)
-           - NOTE: It can take a long time to accomplish (even days).
-        - Save the performance results into CSV files in the `05_Train_Validate_Models/exec_results` folder
+   
+    6.3) Generate the learning instances from the matrices **_X_**'s for each time step. Use a sliding window with size 4 and shifted by 1.
+  
+      ![Screenshot 2024-07-16 08:44:56](https://github.com/user-attachments/assets/f512bf2a-9dc4-4089-ad21-ad820b18c20a)
+
+    
              
     - Pipeline Overview:
 
