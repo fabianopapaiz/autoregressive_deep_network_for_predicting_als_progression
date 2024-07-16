@@ -95,37 +95,42 @@ For those wanting to try it out, this is what you need:
       ![overall](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/10559c84-9b84-460d-91ca-132dab0124d4)
 
 
+---
 
-    - Validation performance obtained by each scenario and algorithm:
+7) Best validation performance obtained by each algorithm (GRU and LSTM):
   
       ![best_performance_by_model_ALSFRS_Total](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/b15c9e02-633b-4d65-ad73-c15555f3bf95)
 
 
-    - Best deep model architecture:
+---
+
+8) Best deep learning model architecture (GRU):
 
       ![rnn](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/87baaf73-c88e-4d04-bf23-5ab4ec8c4e7d)
 
           
-    - Individualized predictions:
+---
+
+9) Individualized predictions using a patient from the _Testing_ subset:
 
       ![patient_example_2](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/c7c180ef-d15e-4bd2-a983-287b80206060)
 
 
+---
 
-8) Grid-Search hyperparameters used for each algorithm.
+10) Grid-Search hyperparameters used for each algorithm.
 
-![grid-search-params](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/assets/16102250/8ed50d34-ff82-43c7-8364-b51d9ffbff8b)
 
 
 ---
 
-8) Best models' hyperparameters
+11) Best models' hyperparameters
 
 ![best-model-params](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/assets/16102250/2d00db54-ddd3-4001-9193-15fa1ac12ca5)
 
 ---
 
-9) Additional Information:
+12) Additional Information:
 
    [Exploratory Data Analysis](https://github.com/fabianopapaiz/ensemble_imbalance_model_for_als_prognosis/files/12899208/additional_info.pdf)
 
