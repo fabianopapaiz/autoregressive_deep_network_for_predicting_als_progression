@@ -83,9 +83,10 @@ For those wanting to try it out, this is what you need:
       ![Screenshot 2024-07-16 08:55:50](https://github.com/user-attachments/assets/5e31ef36-dc45-4cf3-a620-cf9274a1c938)
 
 
-    6.5) Evaluate the models using 3-month data to predict the next 12 months, comparing the predicted and actual values. The metrics utilized were **RMSE** and **R<sup>2</sup>**.
+    6.5) Use the Autoregressive Multi-Step Multi-Output approach to evaluate the models using 3-month data to predict the next 12 months, comparing the predicted and actual values. The metrics utilized were **RMSE** and **R<sup>2</sup>**.
 
-      ![Screenshot 2024-07-16 08:57:12](https://github.com/user-attachments/assets/99964a29-165e-4f36-b351-4bc9c7ac599d)
+      ![Screenshot 2024-07-16 09:02:47](https://github.com/user-attachments/assets/a58ee2cd-1e7b-4599-b898-7db92b793de9)
+
 
 
 
