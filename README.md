@@ -172,7 +172,9 @@ For those wanting to try it out, this is what you need:
 
    - Example using data from the first three months to make predictions. The plot compares the actual and predicted values for the next 3, 6, 9, and 12 months. The information comprises the disease duration, total score, and slopes from symptoms onset and first visit. The shadowed area represents the margin of error based on the RMSE. Score and slope values inside annotations are represented in the “predicted (actual)” format.
 
-      ![patient_example_2](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/c7c180ef-d15e-4bd2-a983-287b80206060)
+      ![Screenshot 2024-07-16 10:09:52](https://github.com/user-attachments/assets/503653ae-b2e9-458c-8947-620c7073f138)
+
+
 
 
 ---
