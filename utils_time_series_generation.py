@@ -256,7 +256,7 @@ def generate_time_series_bmi(df_temporal, dir_dest):
     months = np.linspace(0, threshold, threshold+1, dtype=float) #[1.0, 2.0, 3.0,..., 72.0]
 
 
-    baselines = ['Symptoms_Onset']
+    baselines = ['Symptoms_Onset', 'First_Visit']
 
     for baseline in baselines:
 
@@ -273,6 +273,7 @@ def generate_time_series_bmi(df_temporal, dir_dest):
             ], 
             inplace=True
         )
+
 
         # filter rows by threshold
         df_pivot = df_copy.copy()
@@ -308,12 +309,19 @@ def generate_time_series_bmi(df_temporal, dir_dest):
         df_aux = df_aux[cols_months_ordered]
                 
         # set month-0 = NaN 
-        df_aux[0.0] = np.NaN
+        if 0.0 not in df_aux.columns:
+            df_aux[0.0] = np.NaN
  
         # read file saved to fill NaN values using interpolation
         df_fill_nan_using_interpolation = df_aux
         # get columns ignoring 'subject_id'
         cols_months = df_fill_nan_using_interpolation.columns[1:]
+
+        # save original measurements
+        csv_file = f'{dir_dest}/TimeSeries/{baseline}_BMI_TimeSeries_RAW.csv'
+        df_to_save = df_aux[df_aux.columns[1:]].dropna(axis = 0, how = 'all')
+        utils.save_to_csv(df=df_aux.loc[df_to_save.index], csv_file=csv_file)
+
 
         # print (cols_months)
         df_aux = df_fill_nan_using_interpolation[cols_months].interpolate(
@@ -335,7 +343,7 @@ def generate_time_series_bmi(df_temporal, dir_dest):
 
         # save data again for each Value column with interpolation
         print(f'BMI')
-        csv_file = f'{dir_dest}/TimeSeries/BMI_TimeSeries.csv'
+        csv_file = f'{dir_dest}/TimeSeries/{baseline}_BMI_TimeSeries.csv'
         utils.save_to_csv(df=df_fill_nan_using_interpolation, csv_file=csv_file)
 
         # just for further tests
@@ -354,7 +362,7 @@ def generate_time_series_svc(df_temporal, dir_dest):
     months = np.linspace(0, threshold, threshold+1, dtype=float) #[1.0, 2.0, 3.0,..., 72.0]
 
 
-    baselines = ['Symptoms_Onset']
+    baselines = ['Symptoms_Onset', 'First_Visit']
 
     for baseline in baselines:
 
@@ -406,12 +414,21 @@ def generate_time_series_svc(df_temporal, dir_dest):
         df_aux = df_aux[cols_months_ordered]
                 
         # set month-0 = NaN 
-        df_aux[0.0] = np.NaN
+        if 0.0 not in df_aux.columns:
+            df_aux[0.0] = np.NaN
  
         # read file saved to fill NaN values using interpolation
         df_fill_nan_using_interpolation = df_aux
         # get columns ignoring 'subject_id'
         cols_months = df_fill_nan_using_interpolation.columns[1:]
+
+
+        # save original measurements
+        csv_file = f'{dir_dest}/TimeSeries/{baseline}_SVC_TimeSeries_RAW.csv'
+        df_to_save = df_aux[df_aux.columns[1:]].dropna(axis = 0, how = 'all')
+        utils.save_to_csv(df=df_aux.loc[df_to_save.index], csv_file=csv_file)
+
+
 
         # print (cols_months)
         df_aux = df_fill_nan_using_interpolation[cols_months].interpolate(
@@ -433,7 +450,7 @@ def generate_time_series_svc(df_temporal, dir_dest):
 
         # save data again for each Value column with interpolation
         print(f'SVC')
-        csv_file = f'{dir_dest}/TimeSeries/SVC_TimeSeries.csv'
+        csv_file = f'{dir_dest}/TimeSeries/{baseline}_SVC_TimeSeries.csv'
         utils.save_to_csv(df=df_fill_nan_using_interpolation, csv_file=csv_file)
 
         # just for further tests
@@ -450,7 +467,7 @@ def generate_time_series_fvc(df_temporal, dir_dest):
     months = np.linspace(0, threshold, threshold+1, dtype=float) #[1.0, 2.0, 3.0,..., 72.0]
 
 
-    baselines = ['Symptoms_Onset']
+    baselines = ['Symptoms_Onset', 'First_Visit']
 
     for baseline in baselines:
 
@@ -502,12 +519,20 @@ def generate_time_series_fvc(df_temporal, dir_dest):
         df_aux = df_aux[cols_months_ordered]
                 
         # set month-0 = NaN 
-        df_aux[0.0] = np.NaN
+        if 0.0 not in df_aux.columns:
+            df_aux[0.0] = np.NaN
  
         # read file saved to fill NaN values using interpolation
         df_fill_nan_using_interpolation = df_aux
         # get columns ignoring 'subject_id'
         cols_months = df_fill_nan_using_interpolation.columns[1:]
+
+        # save original measurements
+        csv_file = f'{dir_dest}/TimeSeries/{baseline}_FVC_TimeSeries_RAW.csv'
+        df_to_save = df_aux[df_aux.columns[1:]].dropna(axis = 0, how = 'all')
+        utils.save_to_csv(df=df_aux.loc[df_to_save.index], csv_file=csv_file)
+
+
 
         # print (cols_months)
         df_aux = df_fill_nan_using_interpolation[cols_months].interpolate(
@@ -529,7 +554,7 @@ def generate_time_series_fvc(df_temporal, dir_dest):
 
         # save data again for each Value column with interpolation
         print(f'FVC')
-        csv_file = f'{dir_dest}/TimeSeries/FVC_TimeSeries.csv'
+        csv_file = f'{dir_dest}/TimeSeries/{baseline}_FVC_TimeSeries.csv'
         utils.save_to_csv(df=df_fill_nan_using_interpolation, csv_file=csv_file)
 
         # just for further tests
@@ -539,8 +564,7 @@ def generate_time_series_fvc(df_temporal, dir_dest):
 
 
 
-
-def generate_time_series_alsfrs(df_temporal, dir_dest):
+def generate_time_series_alsfrs__OLD(df_temporal, dir_dest):
 
     # Get values by month up to 72 months (i.e., 6 years)
     n_years = 10
@@ -549,7 +573,8 @@ def generate_time_series_alsfrs(df_temporal, dir_dest):
 
 
     baselines = [
-        'Symptoms_Onset'
+        'Symptoms_Onset', 
+        'First_Visit',
     ]
 
     columns_questions_ALSFRS = [
@@ -584,7 +609,9 @@ def generate_time_series_alsfrs(df_temporal, dir_dest):
         'Qty_Regions_Involved',
         # boolean columns
         'Patient_with_Gastrostomy',
-
+        #
+        'ALSFRS_Total',
+        'First_Visit_ALSFRS_Total',        
     ]
     columns_to_interpolate = [
         #
@@ -598,6 +625,20 @@ def generate_time_series_alsfrs(df_temporal, dir_dest):
         'Slope_from_Onset_Q8_Walking',
         'Slope_from_Onset_Q9_Climbing_Stairs',
         'Slope_from_Onset_Q10_Respiratory',
+        #
+        'Slope_from_First_Visit_Q1_Speech',
+        'Slope_from_First_Visit_Q2_Salivation',
+        'Slope_from_First_Visit_Q3_Swallowing',
+        'Slope_from_First_Visit_Q4_Handwriting',
+        'Slope_from_First_Visit_Q5_Cutting',
+        'Slope_from_First_Visit_Q6_Dressing_and_Hygiene',
+        'Slope_from_First_Visit_Q7_Turning_in_Bed',
+        'Slope_from_First_Visit_Q8_Walking',
+        'Slope_from_First_Visit_Q9_Climbing_Stairs',
+        'Slope_from_First_Visit_Q10_Respiratory',
+        #
+        'Slope_from_Onset_ALSFRS_Total',
+        'Slope_from_First_Visit_ALSFRS_Total',
     ]
 
     columns = columns_not_to_interpolate + columns_to_interpolate
@@ -609,9 +650,9 @@ def generate_time_series_alsfrs(df_temporal, dir_dest):
         
         for column in columns:
 
-            #dont process the score, only the slopes
-            if column in columns_questions_ALSFRS:
-                continue
+            # #dont process the score, only the slopes
+            # if column in columns_questions_ALSFRS:
+            #     continue
 
             col_baseline = f'Delta_from_{baseline}'
 
@@ -670,11 +711,21 @@ def generate_time_series_alsfrs(df_temporal, dir_dest):
             
             # if column is a slope Total-Score from onset, set month-0 = 0.0 (none decline or increase)
             if (column == 'Slope_from_Onset_Total_Score') | ('Slope_from_Onset_Q' in column):
-                df_aux[0.0] = 0.0
+                if baseline == 'Symptoms_Onset':
+                    df_aux[0.0] = 0.0
+            #        
             # if column is a ALSFRS question, set month-0 = 4 (Max score for each ALSFRS question)
             elif (column in columns_questions_ALSFRS):
-                df_aux[0.0] = 4.0
+                if baseline == 'Symptoms_Onset':
+                    df_aux[0.0] = 4.0
                 round_decimal_places = 0
+            
+            # if column is ALSFRS Total Score, set month-0 = 4 (Max score for each ALSFRS question)
+            elif (column == 'ALSFRS_Total'):
+                if baseline == 'Symptoms_Onset':
+                    df_aux[0.0] = 40.0
+                round_decimal_places = 0
+            #
             # if column is to do not interpolate, set round_decimal_places = 0
             elif (column in columns_not_to_interpolate):
                 round_decimal_places = 0
@@ -687,6 +738,16 @@ def generate_time_series_alsfrs(df_temporal, dir_dest):
 
             # get columns ignoring 'subject_id'
             cols_months = df_fill_nan_using_interpolation.columns[1:]
+
+
+            print(f'{col_name}')
+
+            # save original measurements
+            csv_file = f'{dir_dest}/TimeSeries/ALSFRS/{baseline}_ALSFRS_TimeSeries_{col_name}_RAW.csv'
+            df_to_save = df_aux[df_aux.columns[1:]].dropna(axis = 0, how = 'all')
+            utils.save_to_csv(df=df_aux.loc[df_to_save.index], csv_file=csv_file)
+
+
 
 
             # perform Missing Imputation using interpolation
@@ -708,8 +769,7 @@ def generate_time_series_alsfrs(df_temporal, dir_dest):
             df_fill_nan_using_interpolation.dropna(inplace=True)
 
             # save data again for each Value column with interpolation
-            print(f'{col_name}')
-            csv_file = f'{dir_dest}/TimeSeries/ALSFRS/ALSFRS_TimeSeries_{col_name}.csv'
+            csv_file = f'{dir_dest}/TimeSeries/ALSFRS/{baseline}_ALSFRS_TimeSeries_{col_name}.csv'
             utils.save_to_csv(df=df_fill_nan_using_interpolation, csv_file=csv_file)
 
             # just for further tests
@@ -717,3 +777,293 @@ def generate_time_series_alsfrs(df_temporal, dir_dest):
 
             print()
 
+
+def generate_time_series_alsfrs(df_temporal, dir_dest):
+
+    # Get values by month up to 72 months (i.e., 6 years)
+    n_years = 10
+    threshold = 12 * n_years # "n" years
+    months = np.linspace(0, threshold, threshold+1, dtype=float) #[1.0, 2.0, 3.0,..., 72.0]
+
+
+    columns_questions_ALSFRS = [
+        'Q1_Speech',
+        'Q2_Salivation',
+        'Q3_Swallowing',
+        'Q4_Handwriting',
+        'Q5_Cutting',
+        'Q6_Dressing_and_Hygiene',
+        'Q7_Turning_in_Bed',
+        'Q8_Walking',
+        'Q9_Climbing_Stairs',
+        'Q10_Respiratory',
+    ]
+
+    columns_not_to_interpolate = [
+        'Q1_Speech',
+        'Q2_Salivation',
+        'Q3_Swallowing',
+        'Q4_Handwriting',
+        'Q5_Cutting',
+        'Q6_Dressing_and_Hygiene',
+        'Q7_Turning_in_Bed',
+        'Q8_Walking',
+        'Q9_Climbing_Stairs',
+        'Q10_Respiratory',
+        #
+        'Region_Involved_Bulbar',
+        'Region_Involved_Upper_Limb',
+        'Region_Involved_Lower_Limb',
+        'Region_Involved_Respiratory',
+        'Qty_Regions_Involved',
+        # boolean columns
+        'Patient_with_Gastrostomy',
+        #
+        'ALSFRS_Total',
+    ]
+    columns_to_interpolate = [
+        #
+        # 'Slope_from_Onset_Q1_Speech',
+        # 'Slope_from_Onset_Q2_Salivation',
+        # 'Slope_from_Onset_Q3_Swallowing',
+        # 'Slope_from_Onset_Q4_Handwriting',
+        # 'Slope_from_Onset_Q5_Cutting',
+        # 'Slope_from_Onset_Q6_Dressing_and_Hygiene',
+        # 'Slope_from_Onset_Q7_Turning_in_Bed',
+        # 'Slope_from_Onset_Q8_Walking',
+        # 'Slope_from_Onset_Q9_Climbing_Stairs',
+        # 'Slope_from_Onset_Q10_Respiratory',
+        #
+        # 'Slope_from_First_Visit_Q1_Speech',
+        # 'Slope_from_First_Visit_Q2_Salivation',
+        # 'Slope_from_First_Visit_Q3_Swallowing',
+        # 'Slope_from_First_Visit_Q4_Handwriting',
+        # 'Slope_from_First_Visit_Q5_Cutting',
+        # 'Slope_from_First_Visit_Q6_Dressing_and_Hygiene',
+        # 'Slope_from_First_Visit_Q7_Turning_in_Bed',
+        # 'Slope_from_First_Visit_Q8_Walking',
+        # 'Slope_from_First_Visit_Q9_Climbing_Stairs',
+        # 'Slope_from_First_Visit_Q10_Respiratory',
+        #
+        # 'Slope_from_Onset_ALSFRS_Total',
+        # 'Slope_from_First_Visit_ALSFRS_Total',
+    ]
+
+    columns = columns_not_to_interpolate + columns_to_interpolate
+
+    # dir_dest = os.path.abspath('../03_preprocessed_data/')
+
+    
+    for column in columns:
+
+        # #dont process the score, only the slopes
+        # if column in columns_questions_ALSFRS:
+        #     continue
+
+        col_baseline = 'Delta_from_First_Visit'
+
+        # copy data ordering by col_baseline
+        df_copy = df_temporal.sort_values(by=['subject_id', col_baseline]).copy()
+
+
+        # convert boolean values to 0/1 for Boolean cloumns
+        if (column == 'Patient_with_Gastrostomy') | (column.startswith('Region_Involved_')):
+            df_copy[column].replace({True: 1, False: 0}, inplace=True)
+            
+        # drop rows with NaN in "col_baseline" and "column"
+        df_copy.dropna(
+            subset=[
+                col_baseline, 
+                column,
+            ], 
+            inplace=True
+        )
+
+        # filter rows by threshold
+        df_pivot = df_copy.copy()
+
+        # get only the names of the Values columns 
+        cols_to_pivot = df_pivot.columns[2:]
+
+        # create pivot by column Result
+        df_aux = df_pivot.pivot_table(
+            index='subject_id', 
+            columns=col_baseline, 
+            values=column,
+            aggfunc='max', # get max value in that month (can exist 2+ measurements for a same month)
+        )
+
+        # reset index
+        df_aux.reset_index(inplace=True)
+
+        # get the month-columns existing in the pivot-table
+        cols_months = df_aux.columns[1:]
+
+        # check if all months columns were created [1-72]
+        for month in months:
+            # if month not present in the columns
+            if month not in cols_months:
+                # Creating column for this month and set its values to NaN
+                # PS: "int(month)" is used to keep columns ordered by month number
+                df_aux.insert(int(month), month, np.NaN)
+
+        # code to ensure the order of the columns
+        cols_months_ordered = list(sorted(months))
+        cols_months_ordered.insert(0, 'subject_id')
+        df_aux = df_aux[cols_months_ordered]
+        
+        round_decimal_places = 2
+        
+        # if column is a slope Total-Score from onset, set month-0 = 0.0 (none decline or increase)
+        if (column == 'Slope_from_Onset_Total_Score') | ('Slope_from_Onset_Q' in column):
+            # if baseline == 'Symptoms_Onset':
+            #     df_aux[0.0] = 0.0
+            pass
+        #        
+        # if column is a ALSFRS question, set month-0 = 4 (Max score for each ALSFRS question)
+        elif (column in columns_questions_ALSFRS):
+            # if baseline == 'Symptoms_Onset':
+            #     df_aux[0.0] = 4.0
+            round_decimal_places = 0
+        
+        # if column is ALSFRS Total Score, set month-0 = 4 (Max score for each ALSFRS question)
+        elif (column == 'ALSFRS_Total'):
+            # if baseline == 'Symptoms_Onset':
+            #     df_aux[0.0] = 40.0
+            round_decimal_places = 0
+        #
+        # if column is to do not interpolate, set round_decimal_places = 0
+        elif (column in columns_not_to_interpolate):
+            round_decimal_places = 0
+
+        
+        col_name = column.replace('_from_Onset', '')
+
+        # read file saved to fill NaN values using interpolation
+        df_fill_nan_using_interpolation = df_aux
+
+        # get columns ignoring 'subject_id'
+        cols_months = df_fill_nan_using_interpolation.columns[1:]
+
+
+        print(f'{col_name}')
+
+        # save original measurements
+        csv_file = f'{dir_dest}/TimeSeries/ALSFRS/ALSFRS_TimeSeries_{col_name}_RAW.csv'
+        df_to_save = df_aux[df_aux.columns[1:]].dropna(axis = 0, how = 'all')
+        if col_name == 'Q1_Speech':
+            utils.save_to_csv(df=df_aux.loc[df_to_save.index], csv_file=csv_file)
+
+
+
+
+        # perform Missing Imputation using interpolation
+        df_aux = df_fill_nan_using_interpolation[cols_months].interpolate(
+            method='linear', 
+            limit_direction='both',
+            limit=1000, 
+            axis=1, 
+            inplace=False,
+        ).copy()
+        
+        # round Values using "round_decimal_places" variable
+        df_aux[cols_months] = np.round(df_aux[cols_months], round_decimal_places)
+        
+        # get subject_id column
+        df_fill_nan_using_interpolation[cols_months] = df_aux[cols_months]
+
+        # drop rows with NaN values (where there is no Value registered)
+        df_fill_nan_using_interpolation.dropna(inplace=True)
+
+        # save data again for each Value column with interpolation
+        csv_file = f'{dir_dest}/TimeSeries/ALSFRS/ALSFRS_TimeSeries_{col_name}.csv'
+        utils.save_to_csv(df=df_fill_nan_using_interpolation, csv_file=csv_file)
+
+        # just for further tests
+        df_aux = df_fill_nan_using_interpolation.copy()
+
+        print()
+
+
+def generate_time_series_static_features_based_on_alsfrs(df_temporal, df_patients):
+    # Get values by month up to 72 months (i.e., 6 years)
+    n_years = 10
+    threshold = 12 * n_years # "n" years
+    months = np.linspace(0, threshold, threshold+1, dtype=float) #[1.0, 2.0, 3.0,..., 72.0]
+
+    df_patients_aux = df_patients.loc[(df_patients.subject_id.isin(df_temporal.subject_id.unique()))].copy()
+
+
+    df_static_as_ts = None
+
+    print(df_patients_aux.columns)
+    for column in df_patients_aux.columns:
+        print(column)
+        if column != 'subject_id':
+            df_aux = df_patients_aux[['subject_id', column]].copy()
+
+            # calculate disease duration for each month (i.e., value of previous month + 1)
+            for month in months:
+                df_aux[str(month)] = df_aux[column].copy()
+
+            df_aux.insert(1, 'feature', column)
+
+            df_aux.drop([column], axis='columns', inplace=True)
+
+            df_static_as_ts = df_aux if df_static_as_ts is None else pd.concat([df_static_as_ts, df_aux], ignore_index=True)
+
+    return df_static_as_ts
+
+
+def generate_time_series_disease_duration_based_on_alsfrs(df_temporal, dir_dest):
+    # Get values by month up to 72 months (i.e., 6 years)
+    n_years = 10
+    threshold = 12 * n_years # "n" years
+    months = np.linspace(0, threshold, threshold+1, dtype=float) #[1.0, 2.0, 3.0,..., 72.0]
+
+    col_baseline = 'Delta_from_First_Visit'
+    column = 'Delta_from_Symptoms_Onset'        
+
+    # copy data ordering by col_baseline
+    # df_copy = df_temporal.sort_values(by=['subject_id', col_baseline]).copy()
+
+    df_copy = df_temporal.loc[(df_temporal[col_baseline]==0.0)].copy()
+        
+    # drop rows with NaN in "col_baseline" and "column"
+    df_copy.dropna(
+        subset=[
+            col_baseline, 
+            column,
+        ], 
+        inplace=True
+    )
+
+    # filter rows by threshold
+    df_pivot = df_copy.copy()
+
+    # create pivot by column Result
+    df_aux = df_pivot.pivot_table(
+        index='subject_id', 
+        columns=col_baseline, 
+        values=column,
+        aggfunc='max', # get max value in that month (can exist 2+ measurements for a same month)
+    )
+
+    # reset index
+    df_aux.reset_index(inplace=True)
+
+    # calculate disease duration for each month (i.e., value of previous month + 1)
+    for month in months[1:]:
+        df_aux[month] = df_aux[month-1] + 1
+    
+    col_name = 'Disease_Duration'
+
+    print(f'{col_name}')
+
+    # save original measurements
+    csv_file = f'{dir_dest}/TimeSeries/ALSFRS/ALSFRS_TimeSeries_{col_name}.csv'
+    df_to_save = df_aux[df_aux.columns[1:]].dropna(axis = 0, how = 'all')
+    utils.save_to_csv(df=df_aux.loc[df_to_save.index], csv_file=csv_file)
+
+    # return the subject_ids
+    return sorted(df_aux.subject_id.unique())

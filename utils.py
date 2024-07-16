@@ -1,18 +1,26 @@
+import json
 import math
 import os
-import string
 
 import numpy as np
 import pandas as pd
 
 import matplotlib.pyplot as plt
-import seaborn as sns
 from matplotlib.ticker import PercentFormatter
+
+import seaborn as sns
+sns.set_palette('colorblind')
+
+try:
+    plt.style.use('seaborn-v0_8-whitegrid')
+except:
+    plt.style.use('seaborn-whitegrid')
+
+
 
 from datetime import datetime
 from datetime import timedelta
 from dateutil import relativedelta
-
 
 
 
@@ -69,12 +77,7 @@ def get_inputs_and_output_variables(df):
     return X, y
 
 
-# get "n" first colors for a given palette
-def get_n_colors(n, palette='colorblind'):
-    return sns.color_palette(palette, n)
-
-
-def get_train_and_validation_data(dir_data=None, scaled=False, coded=False, use_diagnosis_delay=True):
+def get_train_and_validation_data(dir_data=None, scaled=False, coded=False):
 
     if dir_data is None:
         dir_data = os.path.abspath('training_validation_data/')
@@ -93,12 +96,6 @@ def get_train_and_validation_data(dir_data=None, scaled=False, coded=False, use_
     # Validation set
     df_validation = read_csv(f'{dir_data}/validation_data{suffix}.csv')
     X_valid, y_valid = get_inputs_and_output_variables(df_validation)
-
-
-    # drop Diagnosis_Delay column, if needed
-    if not use_diagnosis_delay:
-        X_train.drop(columns=['Diagnosis_Delay'], inplace=True)
-        X_valid.drop(columns=['Diagnosis_Delay'], inplace=True)
 
 
     # X_all = pd.concat([X_train, X_valid])
@@ -275,23 +272,6 @@ def get_coded_fvc_to_string(code, add_coded_value=False):
 
     return text
 
-
-
-def set_feature_values_order(x):
-
-    x = x.replace('Short', '(0) Short')
-    x = x.replace('Average', '(1) Average')
-    x = x.replace('Long', '(2) Long')
-
-    x = x.replace('Slow', '(0) Slow')
-    x = x.replace('Rapid', '(2) Rapid')
-
-    x = x.replace('Underweight', '(0) Underweight')
-    x = x.replace('Normal', '(1) Normal')
-    x = x.replace('Overweight', '(2) Overweight')
-    x = x.replace('Obesity', '(3) Obesity')
-
-    return x
 
 
 def get_coded_diagnosis_delay_to_string(code, scaled=False, add_coded_value=False):
@@ -500,6 +480,16 @@ def plot_histogram_and_boxplot(df=None, column=None, series=None, zero_and_one_a
 
     series = get_series_from_parameters(df=df, column=column, series=series)
 
+
+    plt.rc('font', size=8)          # controls default text sizes
+    plt.rc('axes', labelsize=8)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=9)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=9)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=9)    # legend fontsize
+    plt.rc('axes', titlesize=10)     # fontsize of the axes title
+    plt.rc('figure', titlesize=10)  # fontsize of the figure title
+
+
     total_of_rows = series.count()
 
     if total_of_rows == 0:
@@ -540,6 +530,7 @@ def plot_histogram_and_boxplot(df=None, column=None, series=None, zero_and_one_a
         print(f'==============================================================================')
 
 
+
     #if variable is CONTINUOUS or INTEGER
     if series.dtype in [float, int]:
         # --------------------------------------------
@@ -569,17 +560,29 @@ def plot_histogram_and_boxplot(df=None, column=None, series=None, zero_and_one_a
         df_distrib = pd.DataFrame(series.value_counts())
         df_distrib = df_distrib.reset_index()
         sn = series.name
-        df_distrib[sn] = df_distrib[sn].astype(float)
-        df_distrib.rename(columns={series.name: 'count', 'index': sn}, inplace=True)
+        # df_distrib[sn] = df_distrib[sn].astype(float)
+        # df_distrib.rename(columns={series.name: 'count', 'index': sn}, inplace=True)
         sum = df_distrib['count'].sum()
 
-        df_distrib = df_distrib.sort_values(by=sn)
 
-        df_distrib['x'] = '' + df_distrib[sn].astype(str)
-        df_distrib['percentage'] = np.round(df_distrib['count'] / sum * 100, 2)
-        df_distrib['percentage'] = df_distrib['percentage'].map('{:,.2f}%'.format)
-        df_distrib['cum_sum'] = df_distrib['count'].cumsum()
-        df_distrib['cum_percentage'] = df_distrib['count'].cumsum() / df_distrib['count'].sum() * 100
+        if 1 == 1:
+            df_distrib = df_distrib.sort_values(by='count')
+
+            df_distrib['x'] = '' + df_distrib[sn].astype(str)
+            df_distrib['percentage'] = np.round(df_distrib['count'] / sum * 100, 2)
+            df_distrib['percentage'] = df_distrib['percentage'].map('{:,.2f}%'.format)
+            df_distrib['cum_sum'] = df_distrib['count'].cumsum()
+            df_distrib['cum_percentage'] = df_distrib['count'].cumsum() / df_distrib['count'].sum() * 100
+        else:
+            pass # previous code
+            # df_distrib = df_distrib.sort_values(by='count')
+
+            # df_distrib['x'] = '' + df_distrib['count'].astype(str)
+            # df_distrib['percentage'] = np.round(df_distrib['count'] / sum * 100, 2)
+            # df_distrib['percentage'] = df_distrib['percentage'].map('{:,.2f}%'.format)
+            # df_distrib['cum_sum'] = df_distrib['count'].cumsum()
+            # df_distrib['cum_percentage'] = df_distrib['count'].cumsum() / df_distrib['count'].sum() * 100
+
 
         # --------------------------------------------
         # BAR GRAPH (WITH QUANTITY AND PERCENTAGE)
@@ -594,7 +597,7 @@ def plot_histogram_and_boxplot(df=None, column=None, series=None, zero_and_one_a
 
         # plot bar graph
         plt.title(f"{series.name.upper()}\n")
-        sns.barplot(x=x, y=y, ax=ax)
+        sns.barplot(x=x, y=y, ax=ax, hue=x, palette='colorblind')
         ax.set_xlabel('')
         plt.xticks(rotation=15)
 
@@ -627,7 +630,7 @@ def plot_histogram_and_boxplot(df=None, column=None, series=None, zero_and_one_a
             # Plot Pareto graph
             x = df_distrib['x']
             y = df_distrib['count']
-            ax = sns.barplot(x=x, y=y)
+            ax = sns.barplot(x=x, y=y, hue=x, palette='colorblind')
             # ax.set_xlabel(sn)
             ax.set_xlabel('')
 
@@ -785,13 +788,15 @@ def print_variable_distribution(df=None, column=None, series=None, fill_nan=Fals
 
         # print(f'N         = {N} {column} (rows with value, excluding NaN´s)')
         print('\nSummary Table:')
-        # df_distrib = pd.DataFrame(df[column].value_counts())
+        # DEU ERRO: df_distrib = pd.DataFrame(df[column].value_counts())
         df_distrib = pd.DataFrame(series.value_counts())
-        sum = df_distrib[series.name].sum()
-        df_distrib['percentage'] = np.round(df_distrib[series.name] / sum * 100, 2)
+        
+        # DEU ERRO: sum = df_distrib[series.name].sum()
+        sum = df_distrib.sum()
+        # DEU ERRO: df_distrib['percentage'] = np.round(df_distrib[series.name] / sum * 100, 2)
+        df_distrib['percentage'] = np.round(df_distrib / sum * 100, 2)
         df_distrib['percentage'] = df_distrib['percentage'].map('{:,.2f}%'.format)
         df_distrib.rename(columns={series.name: 'count'}, inplace=True)
-        # df_distrib['count'] = df_distrib['count'].map('{:,.0f}'.format)
 
         print(df_distrib)
 
@@ -945,11 +950,20 @@ def calculate_years_from_days(days):
 
 
 #return the quantity of YEARS, MONTHS and DAYS from a given quantity of days
-def date_diff_from_days(days):
+def date_diff_from_days(days_orig, return_abs_value=True):
     begin_date = datetime.fromisoformat('1900-01-01')
-    end_date = begin_date + timedelta(days=abs(days))
+    end_date = begin_date + timedelta(days=abs(days_orig))
     years, months, days = date_diff(begin_date=begin_date, end_date=end_date)
-    return np.abs(years), np.abs(months), np.abs(days)
+
+    if return_abs_value:
+        return np.abs(years), np.abs(months), np.abs(days)
+    else:
+        if days_orig < 0:
+            years = -years
+            months = -months
+            days = -days
+
+        return years, months, days
 
 
 #return the difference between 2 dates
@@ -966,12 +980,15 @@ def plot_nan_values_heatmap(data, cmap=['black','white'], cbar=False, title="", 
 
 
 # plot HeatMap 
-def plot_heatmap(data, cmap=['#0050bb', '#ff7b7b'], cbar=True, title="", figsize=[15, 10]):
-    fig = plt.figure(figsize=figsize)
+def plot_heatmap(data, cmap=['#0050bb', '#ff7b7b'], cbar=True, title="", figsize=[15, 10], 
+                 show_figure=True, close_figure=True):
+    plt.figure(figsize=figsize)
     sns.heatmap(data, cmap=cmap, cbar=cbar)
     plt.title(title)
-    plt.show()
-    plt.close()
+    if show_figure:
+        plt.show()
+    if close_figure:
+        plt.close()
 
 
 
@@ -1014,14 +1031,14 @@ def join_datasets_by_key(df_main, df_to_join, key_name, how='left', lsuffix='', 
 
 
 # save DataFrame to CSV
-def save_to_csv(df, csv_file, with_index=False):
+def save_to_csv(df, csv_file, with_index=False, header=True):
 
     #create the folder if does not exist
     folder = os.path.dirname(csv_file)
     os.makedirs(folder, exist_ok=True)
 
     #save CSV file
-    df.to_csv(csv_file, sep=',', index=with_index)
+    df.to_csv(csv_file, sep=',', index=with_index, header=header)
     print(f'{get_quantity_of_rows(df)} samples were saved')
 
 
@@ -1030,13 +1047,30 @@ def get_duplicated_rows(df, column):
     return df.loc[df[column].duplicated(keep=False) == True]
 
 
+# return all files in the informed folder
+def get_files_from_folder(folder):
+    files = []
+    # Iterate directory
+    for file_path in os.listdir(folder):
+        # check if current file_path is a file
+        if os.path.isfile(os.path.join(folder, file_path)):
+            # add filename to list
+            files.append(file_path)
+
+    return files
+
+
+
 #utilitary method to calculate the number of MONTHS from a given days
-def calculate_months_from_days(days):
+def calculate_months_from_days(days, return_abs_value=True):
     months_total = np.NaN
     if (days != None) and (not math.isnan(days)):
-        years, months, days = date_diff_from_days (days)
+        years, months, days = date_diff_from_days (days, return_abs_value=return_abs_value)
         months_total = (years * 12) + months
-    return np.abs(months_total)
+    if return_abs_value:
+        return np.abs(months_total)
+    else:
+        return months_total
 
 
 # calculate the Body Mass Index (BMI) using the formula:  BMI = weight / (height * height)
@@ -1055,13 +1089,21 @@ def print_columns_array(df):
 
 
 
-def get_string_with_separators(string):
-    sep = '-'*len(string)
-    return f'{sep}\n{string}\n{sep}'
+def get_string_with_separators(string, separator_length=50):
+    if (separator_length is None) or (len(string) > separator_length):
+        sep = '-' * (len(string) + 3)
+    else:
+        sep = '-' * (separator_length + 3)
+
+    return f'{sep}\n # {string}\n{sep}'
 
 
-def print_string_with_separators(string):
-    print(get_string_with_separators(string=string))
+def print_string_with_separators(string, separator_length=50):
+    print()
+    if (string is not None) and (string != ''):
+        print(get_string_with_separators(string=string))
+    else:
+        print('-' * 80)
 
 
 
@@ -1381,9 +1423,7 @@ def create_data_frame_from_two_groups(series_1, series_2, title_group_1='Group-1
 
 
 def get_model_description(model_desc):
-
-    model_desc = str(model_desc).replace('()', '')   
-
+    
     NB_models = [
         'ComplementNB', 
         'GaussianNB', 
@@ -1393,27 +1433,22 @@ def get_model_description(model_desc):
     ]
 
     KNN_models = [
-        'RadiusNeighbors', 
         'RadiusNeighborsClassifier', 
-        'KNeighbors',
         'KNeighborsClassifier',
         'k-NN', 
     ]
 
     NN_models = [
-        'MLP',
         'MLPClassifier',
         'NN',
     ]
 
     RF_models = [
-        'RandomForest',
         'RandomForestClassifier',
         'RF', 
     ]
 
     DT_models = [
-        'DecisionTree',
         'DecisionTreeClassifier',
         'DT', 
     ]
@@ -1434,14 +1469,7 @@ def get_model_description(model_desc):
 
     BalancedBagging_models = [
         'BalancedBaggingClassifier',
-        'Bal. Bagging',
-        'BalBagging',
-    ]
-
-    BalancedRF_models = [
-        'BalancedRandomForestClassifier',
-        'Bal. RF',
-        'BalRF',
+        'Bal. Bagging'
     ]
 
     if model_desc in NB_models:
@@ -1462,16 +1490,12 @@ def get_model_description(model_desc):
         return 'CatBoost'
     elif model_desc in BalancedBagging_models:
         return 'Balanced Bagging'
-    elif model_desc in BalancedRF_models:
-        return 'Balanced Random Forest'
     else:
-        return model_desc.replace('Classifier', '')
+        return model_desc
 
 
 
 def get_model_short_description(model_desc):
-
-    model_desc = str(model_desc).replace('()', '')   
     
     NB_models = [
         'ComplementNB', 
@@ -1506,11 +1530,6 @@ def get_model_short_description(model_desc):
         'BalancedBaggingClassifier',
     ]
 
-    BalancedRF_models = [
-        'BalancedRandomForestClassifier',
-        'Balanced Random Forest'
-    ]
-
     if model_desc in NB_models:
         return 'NB'
     elif model_desc in KNN_models:
@@ -1523,20 +1542,66 @@ def get_model_short_description(model_desc):
         return 'DT'
     elif model_desc in BalancedBagging_models:
         return 'Bal. Bagging'
-    elif model_desc in BalancedRF_models:
-        return 'Bal. RF'
     else:
-        return model_desc.replace('Classifier', '')
+        return model_desc
 
 
 
-def print_array_as_list(arr):
-    print('[')
+def print_array_as_list(arr, print_lenght=True):
 
-    for e in arr:
-        print(f"    '{e}',")
+    try:
+        if print_lenght:
+            print(f'Lenght: {len(arr)} items')
+    except:
+        pass
 
-    print(']')
+    # if was a dictionary
+    if type(arr) is dict:
+        try:
+            print(json.dumps(arr, indent=4, sort_keys=True))
+        except:
+            print(arr)
+            # for key in arr.keys():
+            #     print(f'- "{key}"')
+            #     # print()
+            #     if type(arr[key]) is dict:
+            #         for key2 in arr[key].keys():
+            #             # print()
+            #             if type(arr[key][key2]) is dict:
+            #                 print(f'  - "{key2}"')
+            #                 # print(arr[key][key2])
+            #                 for subkey in arr[key][key2].keys():
+            #                     # print(type(arr[key][subkey]))
+            #                     if type(arr[key][key2][subkey]) is pd.DataFrame:
+            #                         print(f'    - "{subkey}" = DataFrame {arr[key][key2][subkey].shape}')
+            #                     elif type(arr[key][key2][subkey]) is np.ndarray:
+            #                         print(f'    - "{subkey}" = np.array {arr[key][key2][subkey].shape}')
+            #                     elif type(arr[key][key2][subkey]) is list:
+            #                         print(f'    - "{subkey}" = list ({len(arr[key][key2][subkey]) })')
+            #                     elif type(arr[key][key2][subkey]) is dict:
+            #                         # print(f'    - "{subkey}" = dict ({len(arr[key][key2][subkey].keys() )})')
+            #                         print(f'    - "{subkey}" = {list(arr[key][key2][subkey].keys()) })')
+            #                     else:
+            #                         print(f'    - "{subkey}" = {arr[key][key2][subkey]}')
+            #                     # print()
+                        
+            #             elif type(arr[key][key2]) is list:
+            #                 print(f'  - "{key2}": list ({len(arr[key][key2])})')
+            #             else:
+            #                 print(f'  - {arr[key][key2]}')
+            #             # print()
+            #     else:
+            #         print(f'  - "{arr[key]}"')
+    else:
+        print('[')
+
+        for e in arr:
+            print(f"    '{e}',")
+
+        print(']')
+
+
+    print()
 
 
 def print_array_as_numbered_list(arr):
@@ -1638,323 +1703,14 @@ def save_plot(plt, folder, file_name, dpi=300, bbox_inches='tight', save_in_pdf_
         )
 
 
-
-
-### Display a 'Non-Short' and 'Short' on xticks to show in SHAP Decision Plot
-def customize_xticks(ax, fontweight='bold', fontsize=10):
-    xticks_modified = []
-    
-    # print('xticks values:', ax.get_xticks())
-
-    for val in ax.get_xticks():
-        xticks_modified.append('')
-        # if val == 0.0:
-        #     xticks_modified.append('Non-Short')
-        # else:
-        #     xticks_modified.append('')
-
-    # xticks_modified[-1] = 'Short'        
-            
-
-    xticks_modified[1] = 'Non-Short'        
-    xticks_modified[-1] = 'Short'        
-
-    # print('xticks modif.:', xticks_modified)
-
-    ax.set_xticks(ax.get_xticks(), xticks_modified, fontweight=fontweight, fontsize=fontsize)
-
-
-def plot_shap_values_by_feature_in_one_graph(data_frames, features_ordered_names, 
-                                            x_min, x_max, folder_to_save,
-                                            file_name='SHAP_by_feature_values', 
-                                            figsize=[5,2], bar_height = 0.1, 
-                                            midline_decimal_point=False, 
-                                            qty_features=14):
-
-    dfs = data_frames.copy()
-
-    # print(len(dfs))
-
-    # rows = int(np.ceil(qty_features/2))
-    # cols = 2
-    # print(rows, cols)
-    rows = 3
-    cols = 4
-
-
-    fig, axes = plt.subplots(
-        rows, 
-        cols, 
-        figsize=figsize, 
-        layout='constrained',
-        # gridspec_kw={'height_ratios': [0.7, 0.7, 0.7, 0.7, 0.7]},
-        # sharex=True, 
-        # sharey=True    
-    )
-
-    # fig5 = plt.figure(constrained_layout=True)
-    # widths = [2, 3, 1.5]
-    # heights = [1, 3, 2]
-    # spec5 = fig5.add_gridspec(ncols=3, nrows=3, width_ratios=widths,
-    #                         height_ratios=heights)
-
-    axes = axes.flatten()
-
-    # print(axes[0], axes[1])
-
-    alphabet = list(string.ascii_lowercase)  
-
-    ranking = ['st', 'nd', 'rd', 'th']
-
-
-    i_axes = 0
-    i = 0
-    for feat_ordered in features_ordered_names:
-
-        if i == qty_features:
-            break
-
-        # print(f'FEAT_ORDERED: {feat_ordered}')
-
-        # PLOT THE GRAPHS ordered inversed by mean SHAP value
-        for feat, qty_values, df in dfs:    
-            
-            # print(f'    FEAT: {feat}')
-            
-            # print(feat, df.columns)
-
-            if (feat == feat_ordered):
-                i+=1
-
-                if feat == 'Diagnosis_Delay': 
-                    df['order'] = df['Feature Values']
-                    df.order = df.order.replace({'Long': 3, 'Average': 2, 'Short': 1})
-                    df.sort_values(by=['order'], inplace=True)
-
-
-                feature_name = f'#{i}: {feat}'
-                # rank = ranking[i-1] if i <= 3 else ranking[3]
-                # feature_name = r'%s$^{%s}$ %s'%(i, rank, feat   )
-
-                # print(f'         plotting {feat}')
-
-                ax = axes[i_axes]
-
-                plot_shap_values_by_feature(
-                        data=df, 
-                        title=f'{feat}', 
-                        # figsize=[6,(qty_values / 2)],
-                        bar_height=bar_height,
-                        x_min=x_min,
-                        x_max=x_max,
-                        feature_name=feature_name,
-                        midline_decimal_point=False,
-                        folder_to_save=None,
-                        axis=ax,
-                        idx_axis=i_axes+1,
-                    )
-                
-
-
-                ax.set_title(f'\n\n{feature_name}',fontweight='bold',fontsize=10)
-
-                # current_row = int((i_axes/2)+0.6)
-                current_row = int((i_axes/4))
-                print(i_axes, current_row, rows)
-                # if (current_row == rows) or (i_axes == len(axes)-2):
-                if (current_row == rows-1) or (i_axes >= 6):
-                    ax.set_xticks([x_min, (x_min*0.7), 0, (x_max*0.7), x_max], labels=[0,1,2,3,4],
-                        fontweight='bold',
-                        fontsize=8
-                    )
-                    ax.set_xticklabels([' ', '$\longleftarrow$ Non-Short', 0, 'Short $\longrightarrow$', ' ' ])
-
-
-                i_axes += 1
-
-                break
-    
-    axes[10].set_axis_off()
-    axes[11].set_axis_off()
-
-
-    plt.tight_layout()
-
-
-    if folder_to_save is not None:
-        save_plot(
-            plt=plt, 
-            folder=folder_to_save, 
-            file_name=file_name, 
-            save_in_pdf_format=True,
-        )
-
-
-    plt.show()
-    plt.close()
-
-
-def plot_shap_values_by_feature(data, title, x_min, x_max, feature_name, folder_to_save,
-                                figsize=[5,2], bar_height = 0.1, midline_decimal_point=False, axis=None, idx_axis=None):
-    
-    
-    # set colors according to positive and negatives values
-    colors = ['red' if x >= 0 else 'blue' for x in data[data.columns[1]].values]
-    
-    if axis is None:
-        plt.figure(figsize=figsize)
-        ax = sns.barplot(
-            data=data, 
-            x=data.columns[1], 
-            y=data.columns[0],
-            palette=colors # sns.color_palette("colorblind"),
-        )
-    else:
-        ax = sns.barplot(
-            data=data, 
-            ax=axis,
-            x=data.columns[1], 
-            y=data.columns[0],
-            palette=colors # sns.color_palette("colorblind"),
-        )
-
-      
-    # annotate the bars with their values
-    for p in ax.patches:
-        
-        x_offset = p.get_width() if p.get_width() > 0 else 0 
-        
-        # REPLACE "DECIMAL POINT" TO "MIDLINE DECIMAL POINT"
-        val = f'{p.get_width():.3f}'
-        if midline_decimal_point:
-            val = val.replace('.', '·')
-        
-        
-        ax.annotate(
-            val, 
-            xy=(
-                x_offset, 
-                p.get_y()+p.get_height()/2
-            ),
-            xytext=(5, 0), 
-            textcoords='offset points', 
-            ha="left", 
-            va="center",
-            size= 10 if axis is None else 8,
-        )    
-
-        # adjust bar width (or height)
-        diff = p.get_height() - bar_height
-
-        # we change the bar width
-        p.set_height(bar_height)
-
-        # we recenter the bar
-        p.set_y(p.get_y() + diff * 0.5)    
-        
-    
-    mult = 1.5
-    x_min = np.round(x_min * 1.05, 3)
-    x_max = np.round(x_max * 1.3, 3)
-    
-
-    ax.set_xlabel('')
-    
-    ax.grid(False)
-
-    ax.spines[['right', 'top']].set_visible(False)
-
-
-    # plotting only 1 graph
-    if axis is None:
-        plt.xlim(x_min, x_max)
-        plt.xticks([x_min, (x_min*0.7), 0, (x_max*0.7), x_max], 
-                fontweight='bold',
-                fontsize=10)
-    
-        plt.axvline(x=0.0, color='#666666', lw=1, ls='--')
-
-        ax.set_xticklabels([' ', '$\longleftarrow$ Non-Short', 0, 'Short $\longrightarrow$', ' ' ])
-
-        ax.set_ylabel(ax.get_ylabel(), fontsize=10)
-        plt.yticks(fontsize=10)
-
-    # ploting using subplots
-    else:
-        ax.axvline(x=0.0, color='#666666', lw=1, ls='--')
-        ax.set_xlim(x_min, x_max)
-        
-        ax.set_ylabel(ax.get_ylabel(),
-                fontweight='bold',
-                fontsize=8)
-
-        ax.set_xticks([])
-
-        ax.set_yticks(ticks=ax.get_yticks(), labels=ax.get_yticklabels(),
-                fontweight='bold',
-                fontsize=8)
-        
-        # if idx_axis%2 == 0:
-        print(idx_axis)
-        if idx_axis not in [1,5,9]:
-            ax.set_ylabel('', fontsize=10)
-
-
-        
-    
-    if folder_to_save is not None:
-        file_name = f'SHAP_by_feature_values_{feature_name}' 
-        save_plot(
-            plt=plt, 
-            folder=folder_to_save, 
-            file_name=file_name, 
-            save_in_pdf_format=True,
-        )
-
-
-    if axis is None:
-        plt.show()
-        plt.close()
-
-
-
-
-# annotate the bars of a graph with their values
-def annotate_barplot(ax, horizontal=True, bar_height=0.8, midline_decimal_point=False, font_size=9,
-                     deslocate=0.0, color='black', weight='normal'):
-
-    for p in ax.patches:
-        
-        x_offset = p.get_width() if p.get_width() > 0 else 0 
-
-        # REPLACE "DECIMAL POINT" TO "MIDLINE DECIMAL POINT"
-        val = f'{p.get_width():.3f}'
-        if midline_decimal_point:
-            val = val.replace('.', '·')
-        
-        
-        ax.annotate(
-            val, 
-            xy=(
-                x_offset, 
-                (p.get_y()+p.get_height()/2) + deslocate
-            ),
-            xytext=(5, 0), 
-            textcoords='offset points', 
-            ha="left", 
-            va="center",
-            size=font_size,
-            color=color,
-            weight=weight,
-        )    
-
-        # adjust bar width (or height)
-        diff = p.get_height() - bar_height
-
-        # we change the bar width
-        p.set_height(bar_height)
-
-        # we recenter the bar
-        p.set_y(p.get_y() + diff * 0.5)    
-
-
+def print_type_and_value(var):
+    print(f'Type: {type(var)}')
+    try:
+        print(f'Shape: {var.shape}')
+    except:
+        try:
+            print(f'Lenght: {len(var)}')
+        except:
+            pass
+
+    print(var)

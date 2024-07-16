@@ -123,13 +123,22 @@ def preprocess_bmi(df_to_process, data_dir):
     #calculate in DAYS
     df_temp['Delta_from_Symptoms_Onset_in_Days'] = df_temp.Delta + np.abs(df_temp.Symptoms_Onset_Delta)
     #calculate in MONTHS
-    df_temp['Delta_from_Symptoms_Onset'] = np.NaN
+    df_temp.insert(1, 'Delta_from_Symptoms_Onset', np.NaN)
     in_months = df_temp['Delta_from_Symptoms_Onset_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
     df_temp.loc[df_temp.index,'Delta_from_Symptoms_Onset'] = in_months
 
-    # Drop rows with NaN in Delta_from_Symptoms_Onset column
-    df_temp.dropna(subset=['Delta_from_Symptoms_Onset'], inplace=True)
+
+    #calculates from First Visit
+    df_temp['Delta_from_First_Visit_in_Days'] = df_temp.Delta
+    df_temp.insert(2, 'Delta_from_First_Visit', np.NaN)
+    in_months = df_temp['Delta_from_First_Visit_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
+    df_temp.loc[df_temp.index,'Delta_from_First_Visit'] = in_months
+
+
+    # Drop rows with NaN in Delta_from_First_Visit column
+    df_temp.dropna(subset=['Delta_from_First_Visit'], inplace=True)
     df_temp.dropna(subset=['Height_in_Meters'], inplace=True)
+
 
     # Delete some unnecessary columns
     cols_to_remove = [
@@ -247,6 +256,12 @@ def preprocess_svc(df_to_process, data_dir):
     in_months = df_raw['Delta_from_Symptoms_Onset_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
     df_raw.loc[df_raw.index,'Delta_from_Symptoms_Onset'] = in_months
 
+    #calculates from First Visit
+    df_raw['Delta_from_First_Visit_in_Days'] = df_raw.Slow_vital_Capacity_Delta
+    df_raw.insert(2, 'Delta_from_First_Visit', np.NaN)
+    in_months = df_raw['Delta_from_First_Visit_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
+    df_raw.loc[df_raw.index,'Delta_from_First_Visit'] = in_months
+
 
     # Calculate percentage of normal for those with SVC_Perc_of_Normal = NaN,
     # subject_normal <> NaN and SVC <> NaN
@@ -258,23 +273,16 @@ def preprocess_svc(df_to_process, data_dir):
     df_raw.loc[to_calculate.index, 'SVC_Perc_of_Normal'] = np.round(df_raw['SVC']/df_raw['Subject_Normal']*100, 0)
 
 
-    # Delete some unnecessary columns
-    cols_to_remove = ['Slow_vital_Capacity_Delta', 
-                    'Subject_Liters_Trial_1', 
-                    'pct_of_Normal_Trial_1', 
-                    'Subject_Liters__Trial_2_', 
-                    'pct_of_Normal_Trial_2', 
-                    'Subject_Liters__Trial_3_', 
-                    'pct_of_Normal_Trial_3',
-                    'Slow_Vital_Capacity_Units',
-                    'Symptoms_Onset_Delta', 
-                    'Subject_Normal',
-                    ]
-    df_raw.drop(columns=cols_to_remove, inplace=True)
+    # Solve the problem were rows have duplicated Delta_from_First_Visit_in_Days
+    df_remove_duplicated = df_raw.sort_values(['subject_id', 'Delta_from_First_Visit_in_Days'])
+    #get only the last row for each 'subject_id' and 'Delta_from_First_Visit'
+    df_remove_duplicated = df_remove_duplicated.groupby(['subject_id', 'Delta_from_First_Visit']).last().reset_index()
+
+    df_raw = df_remove_duplicated.copy()
 
 
-    # Drop rows with NaN values in Delta_from_Symptoms_Onset and SVC_Perc_of_Normal
-    df_raw.dropna(subset=['Delta_from_Symptoms_Onset'], inplace=True)
+    # Drop rows with NaN values in Delta_from_First_Visit and SVC_Perc_of_Normal
+    df_raw.dropna(subset=['Delta_from_First_Visit'], inplace=True)
     df_raw.dropna(subset=['SVC_Perc_of_Normal'], inplace=True)
 
 
@@ -290,6 +298,25 @@ def preprocess_svc(df_to_process, data_dir):
 
     df_raw = df_remove_duplicated.copy()
     
+
+    # Delete some unnecessary columns
+    cols_to_remove = [
+        'Slow_vital_Capacity_Delta', 
+        'Subject_Liters_Trial_1', 
+        'pct_of_Normal_Trial_1', 
+        'Subject_Liters__Trial_2_', 
+        'pct_of_Normal_Trial_2', 
+        'Subject_Liters__Trial_3_', 
+        'pct_of_Normal_Trial_3',
+        'Slow_Vital_Capacity_Units',
+        'Symptoms_Onset_Delta', 
+        'Subject_Normal',
+        'Delta_from_First_Visit_in_Days',
+        'Delta_from_Symptoms_Onset_in_Days',
+    ]
+    df_raw.drop(columns=cols_to_remove, inplace=True)
+
+
 
     #
     return df_raw
@@ -373,11 +400,17 @@ def preprocess_fvc(df_to_process, data_dir):
     #calculate in DAYS
     df_raw['Delta_from_Symptoms_Onset_in_Days'] = df_raw.Forced_Vital_Capacity_Delta + np.abs(df_raw.Symptoms_Onset_Delta)
     #calculate in MONTHS
-    df_raw['Delta_from_Symptoms_Onset'] = np.NaN
+    df_raw.insert(1, 'Delta_from_Symptoms_Onset', np.NaN)
     in_months = df_raw['Delta_from_Symptoms_Onset_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
     df_raw.loc[df_raw.index,'Delta_from_Symptoms_Onset'] = in_months
     
+    #calculates from First Visit
+    df_raw['Delta_from_First_Visit_in_Days'] = df_raw.Forced_Vital_Capacity_Delta
+    df_raw.insert(2, 'Delta_from_First_Visit', np.NaN)
+    in_months = df_raw['Delta_from_First_Visit_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
+    df_raw.loc[df_raw.index,'Delta_from_First_Visit'] = in_months
     
+
     # Calculate percentage of normal for those with FVC_Perc_of_Normal = NaN,
     # subject_normal <> NaN and FVC <> NaN
     to_calculate = df_raw.loc[
@@ -388,27 +421,18 @@ def preprocess_fvc(df_to_process, data_dir):
     df_raw.loc[to_calculate.index, 'FVC_Perc_of_Normal'] = np.round(df_raw['FVC']/df_raw['subject_normal']*100, 0)
     
 
-    # Delete some unnecessary columns
-    cols_to_remove = ['Forced_Vital_Capacity_Delta', 
-                    'Subject_Liters_Trial_1', 
-                    'pct_of_Normal_Trial_1', 
-                    'Subject_Liters_Trial_2', 
-                    'pct_of_Normal_Trial_2', 
-                    'Subject_Liters_Trial_3', 
-                    'pct_of_Normal_Trial_3',
-                    'Forced_Vital_Capacity_Units',
-                    'Symptoms_Onset_Delta', 
-                    'subject_normal',
-                    ]
+    # Solve the problem were rows have duplicated Delta_from_First_Visit_in_Days
+    df_remove_duplicated = df_raw.sort_values(['subject_id', 'Delta_from_First_Visit_in_Days'])
+    #get only the last row for each 'subject_id' and 'Delta_from_First_Visit'
+    df_remove_duplicated = df_remove_duplicated.groupby(['subject_id', 'Delta_from_First_Visit']).last().reset_index()
 
-    df_raw.drop(
-        columns=cols_to_remove, 
-        inplace=True
-    )
+    df_raw = df_remove_duplicated.copy()
 
 
-    # Drop rows with NaN values in the columns Delta_from_Symptoms_Onset and FVC_Perc_of_Normal
-    df_raw.dropna(subset=['Delta_from_Symptoms_Onset'], inplace=True)
+
+
+    # Drop rows with NaN values in the columns Delta_from_First_Visit and FVC_Perc_of_Normal
+    df_raw.dropna(subset=['Delta_from_First_Visit'], inplace=True)
     df_raw.dropna(subset=['FVC_Perc_of_Normal'], inplace=True)    
 
 
@@ -425,8 +449,34 @@ def preprocess_fvc(df_to_process, data_dir):
 
     df_raw = df_remove_duplicated.copy()
 
+
+    # Delete some unnecessary columns
+    cols_to_remove = [
+        'Forced_Vital_Capacity_Delta', 
+        'Subject_Liters_Trial_1', 
+        'pct_of_Normal_Trial_1', 
+        'Subject_Liters_Trial_2', 
+        'pct_of_Normal_Trial_2', 
+        'Subject_Liters_Trial_3', 
+        'pct_of_Normal_Trial_3',
+        'Forced_Vital_Capacity_Units',
+        'Symptoms_Onset_Delta', 
+        'subject_normal',
+        'Delta_from_First_Visit_in_Days',
+        'Delta_from_Symptoms_Onset_in_Days',
+    ]
+
+    df_raw.drop(
+        columns=cols_to_remove, 
+        inplace=True
+    )
+
+
+
     #
     return df_raw
+
+
 
 '''
 Preprocess ALSFRS data
@@ -443,7 +493,7 @@ def preprocess_alsfrs(df_to_process, data_dir):
 
     # Drop rows with NaN value in the ALSFRS_Delta column
     to_delete = df_raw.loc[(df_raw.ALSFRS_Delta.isnull())].copy()
-    df_raw = utils.remove_rows(df=df_raw, to_delete=to_delete, verbose=False)
+    df_raw = utils.remove_rows(df=df_raw, to_delete=to_delete, verbose=True)
 
     # Remove unnecessary columns
     cols_to_remove = ['Mode_of_Administration','ALSFRS_Responded_By']
@@ -454,6 +504,7 @@ def preprocess_alsfrs(df_to_process, data_dir):
     # which is divided in a) and b) subparts
     df_raw['Q5_Cutting'] = np.NaN
     df_raw['Patient_with_Gastrostomy'] = np.NaN
+    df_raw['Patient_with_Gastrostomy'] = df_raw['Patient_with_Gastrostomy'].astype(str)
 
     # without Gastrostomy
     df_raw.loc[(df_raw['Q5a_Cutting_without_Gastrostomy'].isnull()==False), 'Q5_Cutting'] = df_raw['Q5a_Cutting_without_Gastrostomy']
@@ -525,43 +576,63 @@ def preprocess_alsfrs(df_to_process, data_dir):
         raise_error=True
     )
 
+
+
+    # INSERT columns with NaN values
+    df_raw.insert(1, 'Delta_from_Symptoms_Onset', np.NaN)
+    df_raw.insert(2, 'Delta_from_First_Visit', np.NaN)
+
     # Create Delta_from_Symptoms_Onset columns (in  days and months)
     #calculate in DAYS
     df_raw['Delta_from_Symptoms_Onset_in_Days'] = df_raw.ALSFRS_Delta + np.abs(df_raw.Symptoms_Onset_Delta)
-
     #calculate in MONTHS
     df_raw['Delta_from_Symptoms_Onset'] = np.NaN
     in_months = df_raw['Delta_from_Symptoms_Onset_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
     df_raw.loc[df_raw.index,'Delta_from_Symptoms_Onset'] = in_months
 
+
+    # calculate from First Visit
+    df_raw['Delta_from_First_Visit_in_Days'] = df_raw.ALSFRS_Delta
+    in_months = df_raw['Delta_from_First_Visit_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
+    df_raw.loc[df_raw.index,'Delta_from_First_Visit'] = in_months
+
+
+    # DONT DELETE ROWS WITH Delta_from_Symptoms_Onset = NaN
+    # # Delete rows that have Delta_from_Symptoms_Onset = NaN
+    # to_delete = df_raw.loc[
+    #     (df_raw.Delta_from_Symptoms_Onset.isnull()==True)
+    # ]
+    # df_raw = utils.remove_rows(df=df_raw, to_delete=to_delete, verbose=False)
+
+
+    # DONT EXECUTE THIS
+    # # Solve the problem were rows have duplicated Delta_from_Symptoms_Onset
+    # df_remove_duplicated = df_raw.sort_values(['subject_id', 'Delta_from_Symptoms_Onset_in_Days'])
+    # #get only the last row for each 'subject_id' and 'Delta_from_Symptoms_Onset'
+    # df_remove_duplicated = df_remove_duplicated.groupby(['subject_id', 'Delta_from_Symptoms_Onset']).last().reset_index()
+    
+    # Solve the problem were rows have duplicated Delta_from_First_Visit_in_Days
+    df_remove_duplicated = df_raw.sort_values(['subject_id', 'Delta_from_First_Visit_in_Days'])
+    #get only the last row for each 'subject_id' and 'Delta_from_First_Visit'
+    df_remove_duplicated = df_remove_duplicated.groupby(['subject_id', 'Delta_from_First_Visit']).last().reset_index()
+
+    
+    df_raw = df_remove_duplicated.copy()
+
+
     # Delete some unnecessary columns and
     to_delete = [
         'Symptoms_Onset_Delta', 
+        'Delta_from_First_Visit_in_Days',
     ]
     df_raw.drop(
         columns=to_delete, 
         inplace=True
     )
 
-    # Delete rows that have Delta_from_Symptoms_Onset = NaN
-    to_delete = df_raw.loc[
-        (df_raw.Delta_from_Symptoms_Onset.isnull()==True)
-    ]
-    df_raw = utils.remove_rows(df=df_raw, to_delete=to_delete, verbose=False)
-
-
-    # Solve the problem were rows have duplicated Delta_from_Symptoms_Onset
-    # sort rows by 'subject_id', 'Delta_from_Symptoms_Onset'
-    df_remove_duplicated = df_raw.sort_values(['subject_id', 'Delta_from_Symptoms_Onset_in_Days'])
-    
-    #get only the last row for each 'subject_id' and'Delta_from_Symptoms_Onset'
-    df_remove_duplicated = df_remove_duplicated.groupby(['subject_id', 'Delta_from_Symptoms_Onset']).last().reset_index()
-    
-    df_raw = df_remove_duplicated.copy()
-
 
     # =======================================================================
-    # Calculate the Slopes from Onset for each row for ALSFRS
+    # Calculate the Questions-Slopes from Onset for each row for ALSFRS
     # =======================================================================
     
     # Sort the data by subject_id and Delta_from_Symptoms_Onset_in_Days columns
@@ -591,6 +662,54 @@ def preprocess_alsfrs(df_to_process, data_dir):
         slope = (max_score - df_raw[col]) / df_raw['Delta_from_Symptoms_Onset']
         # round to 2 decimal places
         df_raw[c] = np.round(slope, 2) 
+
+
+    # ==================================================================================
+    # Calculate the ALSFRS-Total (Score and Slope) from Onset and First Visit 
+    # ==================================================================================
+    
+    # create column calculating the sum of all questions
+    df_raw['ALSFRS_Total'] = df_raw['Q1_Speech'] + \
+                             df_raw['Q2_Salivation'] + \
+                             df_raw['Q3_Swallowing'] + \
+                             df_raw['Q4_Handwriting'] + \
+                             df_raw['Q5_Cutting'] + \
+                             df_raw['Q6_Dressing_and_Hygiene'] + \
+                             df_raw['Q7_Turning_in_Bed'] + \
+                             df_raw['Q8_Walking'] + \
+                             df_raw['Q9_Climbing_Stairs'] + \
+                             df_raw['Q10_Respiratory'] 
+
+    # calculate the slope from Onset
+    df_raw['Slope_from_Onset_ALSFRS_Total'] = (40 - df_raw['ALSFRS_Total']) / df_raw['Delta_from_Symptoms_Onset']
+    
+
+
+    # calculate the slope from First-Visit
+    df_raw['Slope_from_First_Visit_ALSFRS_Total'] = np.NaN
+    df_raw['First_Visit_ALSFRS_Total'] = np.NaN
+
+    subject_ids = df_raw.subject_id.unique()
+    for subject_id in subject_ids:
+        current_patient = df_raw.loc[(df_raw.subject_id==subject_id)]
+        first_visit = current_patient.loc[(current_patient.Delta_from_First_Visit==0.0)]
+        if first_visit.shape[0] > 0:
+            df_raw.loc[first_visit.index, 'Slope_from_First_Visit_ALSFRS_Total'] = 0.0
+            first_visit_score = first_visit['ALSFRS_Total'].values[0]
+            to_calculate = current_patient.loc[(current_patient.Delta_from_First_Visit>0.0)].copy()
+            df_raw.loc[to_calculate.index, 'Slope_from_First_Visit_ALSFRS_Total'] = \
+                (df_raw['ALSFRS_Total'] - first_visit_score) / df_raw['Delta_from_First_Visit']
+            df_raw.loc[current_patient.index, 'First_Visit_ALSFRS_Total'] = first_visit_score
+
+            # calculate slopes for each question
+            for col in cols_to_create:
+                #define name of the column to create
+                c = f'Slope_from_First_Visit_{col}'
+                df_raw.loc[first_visit.index, c] = 0.0
+                first_visit_score = first_visit[col].values[0]
+                # to_calculate = current_patient.loc[(current_patient.Delta_from_First_Visit>0.0)].copy()
+                df_raw.loc[to_calculate.index, c] = \
+                    (df_raw[col] - first_visit_score) / df_raw['Delta_from_First_Visit']
 
 
     # =======================================================================
@@ -685,15 +804,41 @@ def preprocess_riluzole(df_to_process, data_dir):
 
     # Replace NaN values in Riluzole column to "No" and Riluzole-Delta to "0"
     df.loc[(df.Riluzole.isnull()==True), 'Riluzole'] = 'No'
-    df.loc[(df.Riluzole_Delta.isnull()==True), 'Riluzole_Delta'] = 0.0
+    df.loc[(df.Riluzole_Delta.isnull()==True), 'Riluzole_Delta'] = np.NaN
 
     # Convert Riluzole column to Boolean datatype
     df.Riluzole = df.Riluzole.map( {'Yes':True ,'No':False}) 
 
+
+    # Calculate column Riluzole_from_Onset (months) for those samples
+    # with Riluzole = True (died) and Riluzole_Delta <> NaN
+    df_to_update = df.loc[
+        (df.Riluzole==True)
+       &(df.Riluzole_Delta.isnull()==False )
+    ].copy()
+
+    df.loc[df_to_update.index,
+      'Riluzole_from_Onset_in_days'] = df['Riluzole_Delta'] + np.abs(df.Symptoms_Onset_Delta)
+
+    in_months = df['Riluzole_from_Onset_in_days'].apply( lambda x: utils.calculate_months_from_days(x)) 
+
+    df.loc[df_to_update.index,
+        'Riluzole_from_Onset'] = in_months
+
+    # also calculates from First Visit (NOTE: can return negative values)
+    df.loc[df_to_update.index,'Riluzole_from_First_Visit'] = df['Riluzole_Delta'].apply( 
+        lambda x: utils.calculate_months_from_days(x, return_abs_value=False)
+    )
+
+
+
     # Drop unnecessary columns
     df.drop(
         columns=[
-            'Riluzole_Delta', 
+            'Riluzole_Delta',
+            'Riluzole_from_Onset_in_days',
+            'Riluzole_from_Onset',
+            'Riluzole_from_First_Visit',
         ], 
         inplace=True,
     )
@@ -710,6 +855,17 @@ def preprocess_death_data(df_to_process, data_dir):
     # Read DeathData CSV file 
     data_file = f'{data_dir}/PROACT_DEATHDATA.csv'
     df_raw = pd.read_csv(data_file, delimiter=',')
+
+
+    # Solve the problem were rows have duplicated Delta_from_Symptoms_Onset
+    #sort rows by 'subject_id', 'Delta_from_Symptoms_Onset', and 'Slope'
+    df_remove_duplicated = df_raw.sort_values(
+        ['subject_id', 'Subject_Died', 'Death_Days'])
+
+    #get only the last row for each 'subject_id' and'Delta_from_Symptoms_Onset'
+    df_remove_duplicated = df_remove_duplicated.groupby(['subject_id', 'Subject_Died']).last().reset_index()
+    df_raw = df_remove_duplicated.copy()
+
 
     # Join the 2 datasets (renaming some columns)
     df = utils.join_datasets_by_key(df_main=df, df_to_join=df_raw, key_name='subject_id', how='left', 
@@ -737,10 +893,17 @@ def preprocess_death_data(df_to_process, data_dir):
     # Create column Event_Dead_Delta_from_Onset with the same value of
     # the Last_Visit_Delta_from_Onset column for those samples with
     # Event_Dead = False (not died)
+
     df_event_dead_false = df.loc[(df.Event_Dead==False)].copy()
     df_event_dead_false['Event_Dead_Time_from_Onset'] = df_event_dead_false['Last_Visit_from_Onset']
     df.loc[df_event_dead_false.index,
         'Event_Dead_Time_from_Onset'] = df_event_dead_false['Event_Dead_Time_from_Onset']
+
+    # also calculates from First Visit
+    df_event_dead_false['Event_Dead_Time_from_First_Visit'] = df_event_dead_false['Last_Visit_from_First_Visit']
+    df.loc[df_event_dead_false.index,
+        'Event_Dead_Time_from_First_Visit'] = df_event_dead_false['Event_Dead_Time_from_First_Visit']
+
 
 
     # Update column Event_Dead_Delta_from_Onset with the same value of
@@ -752,6 +915,11 @@ def preprocess_death_data(df_to_process, data_dir):
     ].copy()
     df.loc[df_event_dead_true.index,
         'Event_Dead_Time_from_Onset'] = df['Last_Visit_from_Onset']
+
+    # also calculates from First Visit
+    df.loc[df_event_dead_true.index,
+        'Event_Dead_Time_from_First_Visit'] = df['Last_Visit_from_First_Visit']
+
 
 
     # Calculate column Event_Dead_Time_from_Onset (months) for those samples
@@ -769,12 +937,17 @@ def preprocess_death_data(df_to_process, data_dir):
     df.loc[df_to_update.index,
         'Event_Dead_Time_from_Onset'] = in_months
 
+    # also calculates from First Visit
+    df.loc[df_to_update.index,
+        'Event_Dead_Time_from_First_Visit'] = df['Event_Dead_Delta'].apply( lambda x: utils.calculate_months_from_days(x))
+
+
 
     # Delete unncessary columns
     to_delete = [
         'Event_Dead_Delta',
         'Last_Visit_Delta',
-        'Last_Visit_from_Onset',
+        # 'Last_Visit_from_Onset',
         'Event_Dead_Time_from_Onset_in_days',
     ]
 
@@ -876,11 +1049,14 @@ def preprocess_last_visit(df_to_process, data_dir):
                                     how='left')
 
     
+    # Calculate Last Visit in months from FIRST VISIT
+    last_visit_in_months = df.Last_Visit_Delta.apply( lambda x: utils.calculate_months_from_days(x)) 
+    df.loc[df.index,'Last_Visit_from_First_Visit'] = last_visit_in_months
+
+
     # Calculate Last Visit in months from symptoms onset
     df['Last_Visit_from_Onset_in_Days'] = np.abs(df.Last_Visit_Delta) + np.abs(df.Symptoms_Onset_Delta)
-    
     last_visit_in_months = df['Last_Visit_from_Onset_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
-    
     df.loc[df.index,'Last_Visit_from_Onset'] = last_visit_in_months
     
     # Drop irrelevant columns   
@@ -929,81 +1105,38 @@ def preprocess_age_at_onset(df_to_process):
     #update samples with the calculated Age_at_Onset
     df.loc[df_calc_age_onset.index,'Age_at_Onset'] = ages_calculated
         
-
-    #define a dictionary with age ranges
-    age_ranges = {
-        '0-39' : [0, 39],
-        '40-49': [40, 49],
-        '50-59': [50, 59],
-        '60-69': [60, 69],
-        '70+'  : [70, 999],
-    }
-
-
-    # Create Age_Range column and set its value       
-    df['Age_Range_at_Onset'] = np.NAN
-    
-    for key, value in age_ranges.items():
-        label = key
-        min_age = value[0]
-        max_age = value[1] + 1
-        indices = df[(df['Age_at_Onset'] >= min_age) & (df['Age_at_Onset'] < max_age)]
-        df.loc[indices.index, 'Age_Range_at_Onset'] = label
-    
-    # Drop irrelevant columns   
-    irrelevant_cols = [
-        'Age_at_Onset', 
-    ]
-
-    df.drop(
-        columns=irrelevant_cols, 
-        inplace=True,
-    )
-
-
-    # rename columns
-    df.rename(
-        columns={
-            'Age_Range_at_Onset': 'Age_at_Onset', 
-        }, 
-        inplace=True
-    )    
-
     return df
     
 
 
 '''
-Preprocess DIAGNOSIS_DELAY
+Preprocess DISEASE_DURATION
+'''
+def preprocess_disease_duration(df_to_process):
+    df = df_to_process.copy()
+
+    # Calculate Diagnosis_Delay in months
+    disease_duration_in_months = df.Symptoms_Onset_Delta.apply( lambda x: utils.calculate_months_from_days(x)) 
+    df.loc[df.index,'Disease_Duration'] = disease_duration_in_months
+
+    return df
+
+
+
+'''
+Preprocess DIAGNOSTIC_DELAY
 '''
 def preprocess_diagnosis_delay(df_to_process):
     df = df_to_process.copy()
 
     # Calculate Diagnosis_Delay in months
-    df['Diagnosis_Delay_in_Days'] = np.abs(df.Symptoms_Onset_Delta) - np.abs(df.Diagnosis_Delta)
-    diagnosis_delay_in_months = df['Diagnosis_Delay_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
-    df.loc[df.index,'Diagnosis_Delay'] = diagnosis_delay_in_months
-
-    # # Codify Diagnosis_Delay
-    # # - Long    : >  18 months     
-    # # - Average  : >   8 and <= 18 months  
-    # # - Short     : <=  8 months   
-    # to_update = df.loc[(df.Diagnosis_Delay > 18)]
-    # df.loc[to_update.index, 'Diagnosis_Delay_Coded'] = 'Long'
-    
-    # to_update = df.loc[(
-    #     (df.Diagnosis_Delay > 8)
-    #     &(df.Diagnosis_Delay <= 18)
-    # )]
-    # df.loc[to_update.index, 'Diagnosis_Delay_Coded'] = 'Average'
-    
-    # to_update = df.loc[(df.Diagnosis_Delay <= 8)]
-    # df.loc[to_update.index, 'Diagnosis_Delay_Coded'] = 'Short'
-
+    df['Diagnostic_Delay_in_Days'] = np.abs(df.Symptoms_Onset_Delta) - np.abs(df.Diagnosis_Delta)
+    diagnosis_delay_in_months = df['Diagnostic_Delay_in_Days'].apply( lambda x: utils.calculate_months_from_days(x)) 
+    df.loc[df.index,'Diagnostic_Delay'] = diagnosis_delay_in_months
 
     # Drop irrelevant columns   
     irrelevant_cols = [
-        'Diagnosis_Delay_in_Days', 
+        'Diagnostic_Delay_in_Days', 
     ]
 
     df.drop(
@@ -1023,6 +1156,7 @@ def preprocess_als_history(df):
     # Create a new column called site_onset with the aim of standardize its values
     # to [Limb, Bulbar, Spine, Limb and Bulbar, and Other]
     df_als_history['site_onset'] = np.NaN
+    df_als_history['site_onset'] = df_als_history['site_onset'].astype(str)
     df_als_history.head(3)
 
 
@@ -1339,134 +1473,57 @@ def perform_data_codification(df_patients):
 
     # ===================================================================
     # codify Site_Onset
-    df_coded.Site_Onset = df_coded.Site_Onset.map( {'Limb/Spinal': 1, 'Bulbar': 0}) 
-
-    # ===================================================================
-    # codify Age_at_Onset
-    df_coded.Age_at_Onset = df_coded.Age_at_Onset.map( {
-        '0-39' : 0, 
-        '40-49': 1, 
-        '50-59': 2, 
-        '60-69': 3, 
-        '70+'  : 4,
-    }) 
+    df_coded.Site_Onset = df_coded.Site_Onset.map( {'Bulbar': 0, 'Limb/Spinal': 1, 'Other': 2}) 
 
     # ===================================================================
     # codify Riluzole
     df_coded.Riluzole = df_coded.Riluzole.map( {True: 1, False: 0}) 
 
     # ===================================================================
-    # codify Diagnosis_Delay
-    df_coded.Diagnosis_Delay = df_coded.Diagnosis_Delay.astype(int)
-
-    to_update = df_coded.loc[(df_coded.Diagnosis_Delay <= 8)]
-    df_coded.loc[to_update.index, 'Diagnosis_Delay'] = 0
-
-    to_update = df_coded.loc[(
-        (df_coded.Diagnosis_Delay > 8)
-        &(df_coded.Diagnosis_Delay <= 18)
-    )]
-    df_coded.loc[to_update.index, 'Diagnosis_Delay'] = 1
-
-    to_update = df_coded.loc[(df_coded.Diagnosis_Delay > 18)]
-    df_coded.loc[to_update.index, 'Diagnosis_Delay'] = 2
-
-    # ===================================================================
-    # codify FVC
-    df_coded.FVC_at_Diagnosis = df_coded.FVC_at_Diagnosis.astype(int)
-    # Abnormal
-    to_update = df_coded.loc[(df_coded.FVC_at_Diagnosis < 80)]
-    df_coded.loc[to_update.index, 'FVC_at_Diagnosis'] = 1
-    # Normal
-    to_update = df_coded.loc[(df_coded.FVC_at_Diagnosis  >= 80)]
-    df_coded.loc[to_update.index, 'FVC_at_Diagnosis'] = 0 
-
-    # ===================================================================
-    # codify BMI_at_Diagnosis
-    # underweight    : < 18.5
-    to_update = df_coded.loc[(df_coded.BMI_at_Diagnosis < 18.5 )]
-    df_coded.loc[to_update.index, 'BMI_at_Diagnosis'] = 0
-
-    # normal weight  : >= 18.5 & < 25.0 
-    to_update = df_coded.loc[(df_coded.BMI_at_Diagnosis >= 18.5) & (df_coded.BMI_at_Diagnosis < 25.0 )]
-    df_coded.loc[to_update.index, 'BMI_at_Diagnosis'] = 1
-
-    # overweight     : >= 25.0 & < 30.0 
-    to_update = df_coded.loc[(df_coded.BMI_at_Diagnosis >= 25.0) & (df_coded.BMI_at_Diagnosis < 30.0 )]
-    df_coded.loc[to_update.index, 'BMI_at_Diagnosis'] = 2
-
-    # grade 1 obesity: >= 30.0 
-    to_update = df_coded.loc[(df_coded.BMI_at_Diagnosis >= 30.0)]
-    df_coded.loc[to_update.index, 'BMI_at_Diagnosis'] = 3
-
-    # convert to int
-    df_coded.BMI_at_Diagnosis = df_coded.BMI_at_Diagnosis.astype(int)
-
-
-    # ===================================================================
-    # codify Survival_Group
-    df_coded.Survival_Group = df_coded.Survival_Group.map( {'Short': 1, 'Non-Short': 0}) 
-
-
-    # ===================================================================
-    # codify ALSFRS Questions slopes
-    cols_slope = [
-        'Q1_Speech_slope_at_Diagnosis',
-        'Q2_Salivation_slope_at_Diagnosis',
-        'Q3_Swallowing_slope_at_Diagnosis',
-        'Q4_Handwriting_slope_at_Diagnosis',
-        'Q5_Cutting_slope_at_Diagnosis',
-        'Q6_Dressing_and_Hygiene_slope_at_Diagnosis',
-        'Q7_Turning_in_Bed_slope_at_Diagnosis',
-        'Q8_Walking_slope_at_Diagnosis',
-        'Q9_Climbing_Stairs_slope_at_Diagnosis',
-        'Q10_Respiratory_slope_at_Diagnosis',
-    ]
-
-    for col_slope in cols_slope:
-
-        slow = df_coded.loc[
-            (df_coded[col_slope]<0.05)
-        ].copy()
-
-        average = df_coded.loc[
-            (df_coded[col_slope]>=0.05)
-            &(df_coded[col_slope]<0.14)
-        ].copy()
-
-        rapid = df_coded.loc[
-            (df_coded[col_slope]>=0.14)
-        ].copy()
-
-        df_coded.loc[slow.index, f'{col_slope}'] = 0 #Slow
-
-        df_coded.loc[average.index, f'{col_slope}'] = 1 #Average
-
-        df_coded.loc[rapid.index, f'{col_slope}'] = 2 #Rapid
-
-        #convert to int
-        df_coded[col_slope] = df_coded[col_slope].astype(int)
-
-
-
-    # ===================================================================
-    # convert columns to integer for these columns below
-    cols_integer = [
-        'Qty_Regions_Involved_at_Diagnosis',	
-        'Region_Involved_Bulbar_at_Diagnosis',	
-        'Region_Involved_Upper_Limb_at_Diagnosis',	
-        'Region_Involved_Lower_Limb_at_Diagnosis',	
-        'Region_Involved_Respiratory_at_Diagnosis',	
-        'Patient_with_Gastrostomy_at_Diagnosis',	
-    ]
-
-    for col in cols_integer:
-        df_coded[col] = df_coded[col].astype(int)
-
-
+    # codify Event_Dead
+    df_coded.Event_Dead = df_coded.Event_Dead.map( {True: 1, False: 0}) 
 
     #
     return df_coded
+
+
+
+# read the raw time-series data and get the months of the first and last visits,
+# the quantity of months between first and last, and total of visits registered
+def get_first_last_visits(df_patients, df_alsfrs, max_months_to_analyze=12):
+
+    # get patients having >= 3 visits for ALSFRS
+    patients_with_visits_enough = df_patients.loc[(df_patients.Qty_Measurements_ALSFRS>=3)].copy().subject_id.unique()
+
+    df_alsfrs = df_alsfrs.loc[(df_alsfrs.subject_id.isin(patients_with_visits_enough))].copy()
+
+    selected_patients_ids = []
+
+    for subject_id in patients_with_visits_enough:
+        # get current patient
+        df_current_patient = df_alsfrs.loc[(df_alsfrs.subject_id==subject_id)].copy()
+
+        # drop columns with NaN values
+        df_current_patient.dropna(
+            axis=1, #columns
+            inplace=True
+        )
+        
+        
+        try:
+            month_of_last_visit  = float(df_current_patient.columns[-1])
+        except Exception as ex:
+            # if raise error, then patient have no month with data
+            continue #raise Exception(ex)
+
+        # check if patient has enough number of months    
+        if month_of_last_visit >= max_months_to_analyze:
+            id = df_current_patient.subject_id.values[0]
+            selected_patients_ids.append(id)
+        
+    #    
+    df_return = df_patients.loc[(df_patients.subject_id.isin(selected_patients_ids))]
+    return df_return
 
 
 
