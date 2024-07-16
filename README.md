@@ -120,6 +120,27 @@ For those wanting to try it out, this is what you need:
 
 10) Grid-Search hyperparameters used for each algorithm.
 
+   - Number of neurons and hidden layers:
+       - [64]      
+       - [64, 64]      
+       - [64, 64, 64]      
+       - [128]      
+       - [128, 128]      
+       - [128, 128, 128]      
+       - [256]
+       - [256, 256]       
+       - [256, 256, 256]
+       - [512]       
+       - [512, 512]       
+       - [512, 512, 512]       
+       - [1024]       
+       - [1024, 1024]       
+       - [1024, 1024, 1024]       
+       - [2048]       
+       - [2048, 2048]       
+       - [2048, 2048, 2048]       
+
+
 
 
 ---
