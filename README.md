@@ -24,6 +24,7 @@ For those wanting to try it out, this is what you need:
     - seaborn (0.13)
     - scikit-learn (1.3.2)
     - TensorFlow (2.14)
+    - notebook (6.5.5)
 
 ---
 
