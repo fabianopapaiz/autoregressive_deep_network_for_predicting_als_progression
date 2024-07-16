@@ -140,6 +140,8 @@ For those wanting to try it out, this is what you need:
 ---
 
 8) #### Best validation performance obtained by each algorithm (GRU and LSTM):
+
+   - Best performance by deep model for predicting the ALSFRS Total Score for the next 3, 6, 9, and 12 months using patient data from the first three months. The metrics evaluated were the RMSE (left) and R<sup>2</sup> (right). 
   
       ![best_performance_by_model_ALSFRS_Total](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/b15c9e02-633b-4d65-ad73-c15555f3bf95)
 
@@ -167,6 +169,8 @@ For those wanting to try it out, this is what you need:
 ---
 
 11) #### Individualized predictions using a patient from the _Testing_ subset:
+
+   - Example using data from the first three months to make predictions. The plot compares the actual and predicted values for the next 3, 6, 9, and 12 months. The information comprises the disease duration, total score, and slopes from symptoms onset and first visit. The shadowed area represents the margin of error based on the RMSE. Score and slope values inside annotations are represented in the “predicted (actual)” format.
 
       ![patient_example_2](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/c7c180ef-d15e-4bd2-a983-287b80206060)
 
