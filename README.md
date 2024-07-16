@@ -68,54 +68,42 @@ For those wanting to try it out, this is what you need:
 
 6) #### Perform the Machine Learning pipeline:
    
-    6.1) Split the dataset into _Training_ (80%) and _Validation_ (20%) subsets
+    6.1) Open the temporal data file `data_as_time_series_15m_data_Only_ALSFRS.csv`
+
+    6.2) Split the dataset into _Training_ (80%) and _Validation_ (20%) subsets
    
-    6.2) Utilize the _Training_ subset to create the matrices **_X_**'s (1) comprising information about the variation of all features over time for each patient, where _f_ = 1, 2, ..., 22 (features) and _t_ = 0, 1, ..., 15 (time steps)
+    6.3) Utilize the _Training_ subset to create the matrices **_X_**'s (1) comprising information about the variation of all features over time for each patient, where _f_ = 1, 2, ..., 22 (features) and _t_ = 0, 1, ..., 15 (time steps)
 
       ![Screenshot 2024-07-16 08:40:15](https://github.com/user-attachments/assets/a7d5f6f5-4428-4f7d-ac64-0b9507d80473)
 
    
    
-    6.3) Generate the learning instances from the matrices **_X_**'s for each time step. Use a sliding window with size 4 and shifted by 1.
+    6.4) Generate the learning instances from the matrices **_X_**'s for each time step. Use a sliding window with size 4 and shifted by 1.
   
       ![Screenshot 2024-07-16 08:44:56](https://github.com/user-attachments/assets/f512bf2a-9dc4-4089-ad21-ad820b18c20a)
 
     
              
-    6.4) Develop and train GRU and LSTM models using the 5-fold Cross Validation strategy. To prevent overfitting, you can shuffle the learning instances before training and employ the following strategies: 5-fold Cross-Validation (CV), early stopping, regularization, and drop-out. Evaluate several combinations of hyperparameters using the grid-search strategy. Our hyperparameter search space included the number of hidden layers, the model depth (neurons), the initial learning rate, regularization, and the unidirectional and bidirectional architectures.
+    6.5) Develop and train GRU and LSTM models using the 5-fold Cross Validation strategy. To prevent overfitting, you can shuffle the learning instances before training and employ the following strategies: 5-fold Cross-Validation (CV), early stopping, regularization, and drop-out. Evaluate several combinations of hyperparameters using the grid-search strategy. Our hyperparameter search space included the number of hidden layers, the model depth (neurons), the initial learning rate, regularization, and the unidirectional and bidirectional architectures.
 
       ![Screenshot 2024-07-16 08:55:50](https://github.com/user-attachments/assets/5e31ef36-dc45-4cf3-a620-cf9274a1c938)
 
 
-    6.5) Use the Autoregressive Multi-Step Multi-Output approach to evaluate the models using 3-month data to predict the next 12 months, comparing the predicted and actual values. The metrics utilized were **RMSE** and **R<sup>2</sup>**.
+    6.6) Use the Autoregressive Multi-Step Multi-Output approach to evaluate the models using 3-month data to predict the next 12 months, comparing the predicted and actual values. The metrics utilized were **RMSE** and **R<sup>2</sup>**.
 
       ![Screenshot 2024-07-16 09:02:47](https://github.com/user-attachments/assets/a58ee2cd-1e7b-4599-b898-7db92b793de9)
 
 
 
 
-    6.6)- **Pipeline Overview:**
+    6.7)- **Pipeline Overview:**
 
       ![overall](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/10559c84-9b84-460d-91ca-132dab0124d4)
 
 
 ---
 
-7) #### Best validation performance obtained by each algorithm (GRU and LSTM):
-  
-      ![best_performance_by_model_ALSFRS_Total](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/b15c9e02-633b-4d65-ad73-c15555f3bf95)
-
-
----
-
-8) #### Best deep learning model architecture (GRU):
-
-      ![rnn](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/87baaf73-c88e-4d04-bf23-5ab4ec8c4e7d)
-
-          
----
-
-9) #### Grid-Search hyperparameters used for each algorithm.
+7) #### Grid-Search hyperparameters used for each algorithm.
 
    - Drop-out rates: 10%, 20%, 30%, 35%, 40%, 45%, and 50%
    
@@ -151,7 +139,14 @@ For those wanting to try it out, this is what you need:
 
 ---
 
-10) #### Best deep learning model's hyperparameters (GRU):
+8) #### Best validation performance obtained by each algorithm (GRU and LSTM):
+  
+      ![best_performance_by_model_ALSFRS_Total](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/b15c9e02-633b-4d65-ad73-c15555f3bf95)
+
+
+---
+
+9) #### Best deep learning model's hyperparameters (GRU):
 
    - Drop-out rate: 35%
    
@@ -162,6 +157,13 @@ For those wanting to try it out, this is what you need:
    - Number of neurons and hidden layers: [1024, 1024]
 
 
+---
+
+10) #### Best deep learning model architecture (GRU):
+
+      ![rnn](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/87baaf73-c88e-4d04-bf23-5ab4ec8c4e7d)
+
+          
 ---
 
 11) #### Individualized predictions using a patient from the _Testing_ subset:
