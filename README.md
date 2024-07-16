@@ -78,7 +78,7 @@ For those wanting to try it out, this is what you need:
 
     
              
-    6.4) Develop and train GRU and LSTM models using the 5-fold Cross Validation strategy.
+    6.4) Develop and train GRU and LSTM models using the 5-fold Cross Validation strategy. To prevent overfitting, you can shuffle the learning instances before training and employ the following strategies: 5-fold Cross-Validation (CV), early stopping, regularization, and drop-out. Evaluate several combinations of hyperparameters using the grid-search strategy. Our hyperparameter search space included the number of hidden layers, the model depth (neurons), the initial learning rate, regularization, and the unidirectional and bidirectional architectures.
 
       ![Screenshot 2024-07-16 08:55:50](https://github.com/user-attachments/assets/5e31ef36-dc45-4cf3-a620-cf9274a1c938)
 
@@ -90,7 +90,7 @@ For those wanting to try it out, this is what you need:
 
 
 
-    6.6)- Pipeline Overview:
+    6.6)- **Pipeline Overview:**
 
       ![overall](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/10559c84-9b84-460d-91ca-132dab0124d4)
 
