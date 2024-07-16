@@ -98,7 +98,7 @@ For those wanting to try it out, this is what you need:
 
     6.7)- **Pipeline Overview:**
 
-      ![overall](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/10559c84-9b84-460d-91ca-132dab0124d4)
+      ![Screenshot 2024-07-16 10:14:36](https://github.com/user-attachments/assets/3eaeae7b-eeb0-4132-bcc9-3535fa31f389)
 
 
 ---
