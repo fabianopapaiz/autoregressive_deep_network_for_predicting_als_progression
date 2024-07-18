@@ -102,7 +102,9 @@ For those wanting to try it out, this is what you need:
 
 ---
 
-7) #### Grid-Search hyperparameters used for each algorithm.
+7) #### Grid-Search hyperparameters used for each algorithm (GRU and LSTM).
+
+   - Optimizer: ADAM 
 
    - Drop-out rates: 10%, 20%, 30%, 35%, 40%, 45%, and 50%
    
