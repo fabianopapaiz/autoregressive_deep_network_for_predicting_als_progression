@@ -1,7 +1,7 @@
 # Predicting ALS Progression Using Autoregressive Deep Learning Models
 
 
-This study is the first to employ this approach to ALS prognosis to predict the functional decline over time. We extracted static and temporal features from the Pooled Resource Open-Access ALS Clinical Trials (PRO-ACT) database. We developed and evaluated deep learning models using the Gated Recurrent Unit and Long Short-Term Memory algorithms. Our approach outperformed previous works with a significantly smaller set of input features, thus demonstrating greater effectiveness. With the promising results obtained, our approach could aid physicians in devising personalized treatment and resource planning or serve as an inclusion/exclusion criterion in clinical trials.  
+This study is the first to employ this approach to Amyotrophic Lateral Sclerosis (ALS) prognosis to predict the functional decline over time. We extracted static and temporal features from the Pooled Resource Open-Access ALS Clinical Trials (PRO-ACT) database. We developed and evaluated deep learning models using the Gated Recurrent Unit and Long Short-Term Memory algorithms. Our approach outperformed previous works with a significantly smaller set of input features, thus demonstrating greater effectiveness. With the promising results obtained, our approach could aid physicians in devising personalized treatment and resource planning or serve as an inclusion/exclusion criterion in clinical trials.  
 The results of this work have been published in the research article "Predicting ALS Progression Using Autoregressive Deep Learning Models" (Papaiz et al., 2024).
 
 
