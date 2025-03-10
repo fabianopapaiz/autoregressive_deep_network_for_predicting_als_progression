@@ -142,8 +142,7 @@ For those wanting to try it out, this is what you need:
 
 8) #### Best validation performance obtained by each algorithm (GRU and LSTM):
 
-   - Best performance by deep model for predicting the ALSFRS Total Score for the next 3, 6, 9, and 12 months using patient data from the first three months. The metrics evaluated were the RMSE (left) and R<sup>2</sup> (right). 
-  
+   - Best performance by deep model for predicting the ALSFRS Total Score for the next 3, 6, 9, and 12 months using patient data from the first three months. The metrics evaluated were the RMSE (top) and R2 (bottom). The results were compared with those produced by the Naïve model.
       
 ![best_performance_by_model_and_Naive_ALSFRS_Total_COLUMN](https://github.com/user-attachments/assets/533a790d-dbe6-48b6-b79d-a00420239d87)
 
