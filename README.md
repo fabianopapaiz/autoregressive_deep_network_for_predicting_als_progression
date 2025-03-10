@@ -144,7 +144,8 @@ For those wanting to try it out, this is what you need:
 
    - Best performance by deep model for predicting the ALSFRS Total Score for the next 3, 6, 9, and 12 months using patient data from the first three months. The metrics evaluated were the RMSE (left) and R<sup>2</sup> (right). 
   
-      ![best_performance_by_model_ALSFRS_Total](https://github.com/fabianopapaiz/autoregressive_deep_network_for_predicting_als_progression/assets/16102250/b15c9e02-633b-4d65-ad73-c15555f3bf95)
+      
+![best_performance_by_model_and_Naive_ALSFRS_Total_COLUMN](https://github.com/user-attachments/assets/533a790d-dbe6-48b6-b79d-a00420239d87)
 
 
 ---
